@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>はぴば</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .page {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+    .input-frame {
+      position: relative;
+      display: inline-block;
+      width: 300px;
+      height: 200px;
+      margin: 20px auto;
+    }
+    .input-frame img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .input-frame input {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70%;
+      height: 40px;
+      font-size: 18px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      outline: none;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .media-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .media-container video,
+    .media-container img {
+      width: 200px;
+      height: auto;
+    }
+    .back-button {
+      margin-top: 30px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- STEP1 -->
+  <div id="step1" class="page active">
+    <h1>STEP1</h1>
+    <div class="input-frame">
+      <img src="frame.png" alt="入力枠">
+      <input type="text" id="inputStep1" placeholder="ここに入力してください">
+    </div>
+    <br>
+    <button onclick="checkStep1()">次へ</button>
+  </div>
+
+  <!-- STEP2 -->
+  <div id="step2" class="page">
+    <h1>STEP2</h1>
+    <p>赤＝赤で3セットつくり、赤のペア読め</p>
+    <img id="puzzleImageStep2" src="step2_image.png" alt="謎解き画像">
+    <div class="media-container">
+      <video controls src="video1.mp4"></video>
+      <video controls src="video2.mp4"></video>
+      <video controls src="video3.mp4"></video>
+      <video controls src="video4.mp4"></video>
+      <video controls src="video5.mp4"></video>
+      <video controls src="video6.mp4"></video>
+    </div>
+    <div class="input-frame" style="margin-top: 30px;">
+      <img src="frame.png" alt="入力枠">
+      <input type="text" id="inputStep2" placeholder="ここに入力してください">
+    </div>
+    <br>
+    <button onclick="checkStep2()">次へ</button>
+    <button class="back-button" onclick="goToStep('step1')">← 戻る</button>
+  </div>
+
+  <!-- STEP3 -->
+  <div id="step3" class="page">
+    <h1>STEP3</h1>
+    <p>赤よめ</p>
+    <img id="puzzleImageStep3" src="step3_image.png" alt="謎解き画像" style="margin-top: 10px;">
+    <div class="input-frame" style="margin-top: 30px;">
+      <img src="frame.png" alt="入力枠">
+      <input type="text" id="inputStep3" placeholder="ここに入力してください">
+    </div>
+    <br>
+    <button onclick="checkStep3()">次へ</button>
+    <button class="back-button" onclick="goToStep('step2')">← 戻る</button>
+  </div>
+
+  <!-- LASTSTEP -->
+  <div id="laststep" class="page">
+    <h1>LASTSTEP</h1>
+    <p>「今まで使ってきた枠の画像」すべてに触れろ</p>
+    <div class="media-container">
+      <img src="frame1.png" class="touch-image" onclick="markImageTouched(0)" alt="frame1">
+      <img src="frame2.png" class="touch-image" onclick="markImageTouched(1)" alt="frame2">
+      <img src="frame3.png" class="touch-image" onclick="markImageTouched(2)" alt="frame3">
+      <img src="frame4.png" class="touch-image" onclick="markImageTouched(3)" alt="frame4">
+    </div>
+  </div>
+
+  <!-- LASTSTEP - ANSWER -->
+  <div id="lastanswer" class="page">
+    <h1>LAST</h1>
+    <p>○○にしてやり直せ</p>
+    <div style="margin-top: 30px;">
+      <input type="text" id="inputLast" placeholder="ここに入力してください" style="width: 70%; height: 40px; font-size: 18px; text-align: center;">
+    </div>
+
+    <br>
+    <button onclick="checkLast()">送信</button>
+  </div>
+
+  <!-- FINAL VIDEO PAGE -->
+  <div id="videoend" class="page">
+    <h1>HAPPY BIRTHDAY!</h1>
+    <video controls src="final_video.mp4" style="width: 90%; max-width: 600px;"></video>
+  </div>
+
+
+  <script>
+    let step1Cleared = false;
+    let step2Cleared = false;
+    let step3Cleared = false;
+
+    let touchedImages = [false, false, false, false];
+
+    function showStep(stepId) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(stepId).classList.add("active");
+    }
+
+    function checkStep1() {
+      const input = document.getElementById("inputStep1").value.trim();
+      if (input === "ひろとん") {
+        step1Cleared = true;
+        showStep("step2");
+      } else {
+        alert("答えが違います。");
+      }
+    }
+
+    function checkStep2() {
+      const input = document.getElementById("inputStep2").value.trim();
+      if (input === "あさり") {
+        step2Cleared = true;
+        showStep("step3");
+      } else {
+        alert("答えが違います。");
+      }
+    }
+
+    function checkStep3() {
+      const input = document.getElementById("inputStep3").value.trim();
+      if (input === "えにぐま") {
+        step3Cleared = true;
+        showStep("laststep");
+      } else {
+        alert("答えが違います。");
+      }
+    }
+
+    function checkLast() {
+      const input = document.getElementById("inputLast").value.trim();
+      if (input === "おせち") {
+        showStep("videoend");
+      } else {
+        alert("答えが違います。");
+      }
+    }
+
+    function markImageTouched(index) {
+      touchedImages[index] = true;
+      document.getElementsByClassName("touch-image")[index].style.opacity = 0.5;
+
+      if (touchedImages.every(t => t)) {
+        setTimeout(() => showStep("lastanswer"), 500);
+      }
+    }
+
+    function goToStep(stepId) {
+      if (stepId === "step1" && step1Cleared) {
+        showStep("step1");
+      } else if (stepId === "step2" && step2Cleared) {
+        showStep("step2");
+      } else if (stepId === "step3" && step3Cleared) {
+        showStep("step3");
+      } else {
+        alert("このステップにはまだ戻れません。");
+      }
+    }
+  </script>
+
+</body>
+</html>

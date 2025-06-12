@@ -61,13 +61,76 @@
       margin-top: 30px;
       display: block;
     }
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #fce4ec; /* 好きな色に変更OK */
+      padding: 15px 0;
+      text-align: center;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    /* コンテンツ全体に上の余白を追加して被らないようにする */
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 80px 20px 20px; /* ← 上に80pxの余白追加 */
+    }
+    .video-wrapper {
+      position: relative;
+      display: inline-block;
+      border: 4px solid transparent;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .video-wrapper video {
+      width: 200px;
+      height: auto;
+      display: block;
+    }
+
+    /* 枠の色 */
+    .video-wrapper.red {
+      border-color: red;
+    }
+    .video-wrapper.blue {
+      border-color: blue;
+    }
+    .video-wrapper.yellow {
+      border-color: gold;
+    }
+
+    /* ラベルのスタイル */
+    .video-wrapper.label .label-text {
+      position: absolute;
+      top: 4px;
+      left: 6px;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: black;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 18px;
+      z-index: 2;
+      pointer-events: none; /* クリックを動画に通す */
+    }
+
   </style>
 </head>
 <body>
 
   <!-- STEP1 -->
   <div id="step1" class="page active">
-    <h1>STEP1</h1>
+    <div class="header"><h1>STEP1</h1></div>
     <div class="input-frame">
       <img src="frame.png" alt="入力枠">
       <input type="text" id="inputStep1" placeholder="ここに入力してください">
@@ -78,16 +141,19 @@
 
   <!-- STEP2 -->
   <div id="step2" class="page">
-    <h1>STEP2</h1>
-    <p>赤＝赤で3セットつくり、赤のペア読め</p>
+    <div class="header"><h1>STEP2</h1></div>
+    <h2><strong style="color: red;">赤</strong>＝<strong style="color: blue;">赤</strong>で3セットつくり、赤のペア読め</h2>
     <img id="puzzleImageStep2" src="step2_image.png" alt="謎解き画像">
     <div class="media-container">
-      <video controls src="video1.mp4"></video>
-      <video controls src="video2.mp4"></video>
-      <video controls src="video3.mp4"></video>
-      <video controls src="video4.mp4"></video>
-      <video controls src="video5.mp4"></video>
-      <video controls src="video6.mp4"></video>
+      <!-- 色枠付き3本 -->
+      <div class="video-wrapper red"><video controls src="video1.mp4"></video></div>
+      <div class="video-wrapper blue"><video controls src="video2.mp4"></video></div>
+      <div class="video-wrapper yellow"><video controls src="video3.mp4"></video></div>
+
+      <!-- ラベル付き3本 -->
+      <div class="video-wrapper label"><span class="label-text">①</span><video controls src="video4.mp4"></video></div>
+      <div class="video-wrapper label"><span class="label-text">②</span><video controls src="video5.mp4"></video></div>
+      <div class="video-wrapper label"><span class="label-text">③</span><video controls src="video6.mp4"></video></div>
     </div>
     <div class="input-frame" style="margin-top: 30px;">
       <img src="frame.png" alt="入力枠">
@@ -100,21 +166,29 @@
 
   <!-- STEP3 -->
   <div id="step3" class="page">
-    <h1>STEP3</h1>
-    <p>赤よめ</p>
-    <img id="puzzleImageStep3" src="step3_image.png" alt="謎解き画像" style="margin-top: 10px;">
-    <div class="input-frame" style="margin-top: 30px;">
-      <img src="frame.png" alt="入力枠">
-      <input type="text" id="inputStep3" placeholder="ここに入力してください">
+    <div class="header"><h1>STEP3</h1></div>
+
+    <div style="display: flex; flex-direction: column; align-items: center;">
+      <img id="puzzleImageStep3" src="step3_image.png" alt="謎解き画像" style="margin-top: 10px; max-width: 30%; height: auto;">
+
+      <h1>⇩</h1>
+      <h2>赤よめ</h2>
+
+      <div class="input-frame" style="margin-top: 30px;">
+        <img src="frame.png" alt="入力枠">
+        <input type="text" id="inputStep3" placeholder="ここに入力してください">
+      </div>
     </div>
     <br>
-    <button onclick="checkStep3()">次へ</button>
-    <button class="back-button" onclick="goToStep('step2')">← 戻る</button>
+      <button onclick="checkStep3()">次へ</button>
+      <button class="back-button" onclick="goToStep('step2')">← 戻る</button>
   </div>
+
+
 
   <!-- LASTSTEP -->
   <div id="laststep" class="page">
-    <h1>LASTSTEP</h1>
+    <div class="header"><h1>LAST</h1></div>
     <p>「今まで使ってきた枠の画像」すべてに触れろ</p>
     <div class="media-container">
       <img src="frame1.png" class="touch-image" onclick="markImageTouched(0)" alt="frame1">
@@ -126,7 +200,7 @@
 
   <!-- LASTSTEP - ANSWER -->
   <div id="lastanswer" class="page">
-    <h1>LAST</h1>
+    <div class="header"><h1>LAST</h1></div>
     <p>○○にしてやり直せ</p>
     <div style="margin-top: 30px;">
       <input type="text" id="inputLast" placeholder="ここに入力してください" style="width: 70%; height: 40px; font-size: 18px; text-align: center;">
@@ -138,7 +212,7 @@
 
   <!-- FINAL VIDEO PAGE -->
   <div id="videoend" class="page">
-    <h1>HAPPY BIRTHDAY!</h1>
+    <div class="header"><h1>HAPPY BIRTHDAY!!</h1></div>
     <video controls src="final_video.mp4" style="width: 90%; max-width: 600px;"></video>
     <div style="margin-top: 30px;">
       <button onclick="showStep('step1')">STEP1へ</button>

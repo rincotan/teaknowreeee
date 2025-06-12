@@ -127,13 +127,18 @@
   </style>
 </head>
 <body>
-
+    <div style="margin-top: 30px;">
+      <button onclick="showStep('step1')">STEP1へ</button>
+      <button onclick="showStep('step2')">STEP2へ</button>
+      <button onclick="showStep('step3')">STEP3へ</button>
+      <button onclick="showStep('laststep')">LASTSTEPへ</button>
+    </div>
   <!-- STEP1 -->
   <div id="step1" class="page active">
     <div class="header"><h1>STEP1</h1></div>
     <div class="input-frame">
       <img src="frame.png" alt="入力枠">
-      <input type="text" id="inputStep1" placeholder="ここに入力してください">
+      <input type="text" id="inputStep1" placeholder="ひらがなで入力してね">
     </div>
     <br>
     <button onclick="checkStep1()">次へ</button>
@@ -157,7 +162,7 @@
     </div>
     <div class="input-frame" style="margin-top: 30px;">
       <img src="frame.png" alt="入力枠">
-      <input type="text" id="inputStep2" placeholder="ここに入力してください">
+      <input type="text" id="inputStep2" placeholder="ひらがなで入力してね">
     </div>
     <br>
     <button onclick="checkStep2()">次へ</button>
@@ -176,7 +181,7 @@
 
       <div class="input-frame" style="margin-top: 30px;">
         <img src="frame.png" alt="入力枠">
-        <input type="text" id="inputStep3" placeholder="ここに入力してください">
+        <input type="text" id="inputStep3" placeholder="ひらがなで入力してね">
       </div>
     </div>
     <br>
@@ -189,7 +194,10 @@
   <!-- LASTSTEP -->
   <div id="laststep" class="page">
     <div class="header"><h1>LAST</h1></div>
-    <p>「今まで使ってきた枠の画像」すべてに触れろ</p>
+    <div class="input-frame" style="margin-top: 30px;">
+      <img src="frame.png" alt="入力枠">
+      <input type="text" id="inputStep3" placeholder="全てに触れろ">
+    </div>
     <div class="media-container">
       <img src="frame1.png" class="touch-image" onclick="markImageTouched(0)" alt="frame1">
       <img src="frame2.png" class="touch-image" onclick="markImageTouched(1)" alt="frame2">
@@ -203,7 +211,7 @@
     <div class="header"><h1>LAST</h1></div>
     <p>○○にしてやり直せ</p>
     <div style="margin-top: 30px;">
-      <input type="text" id="inputLast" placeholder="ここに入力してください" style="width: 70%; height: 40px; font-size: 18px; text-align: center;">
+      <input type="text" id="inputLast" placeholder="ひらがなで入力してね" style="width: 70%; height: 40px; font-size: 18px; text-align: center;">
     </div>
 
     <br>

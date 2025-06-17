@@ -1,172 +1,211 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>謎解き</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 100px 20px 20px;
-      margin: 0;
-      background: #fff5cc;
-    }
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: #fce4ec;
-      padding: 15px 0;
-      text-align: center;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
-    }
-    .header h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-    .page {
-      display: none;
-      transform: translateY(20px);
-     opacity: 0;
-      transition: transform 0.5s ease, opacity 0.5s ease;
-    }
-    .page.active {
-      display: block;
-      transform: translateY(0);
-     opacity: 1;
-    }
-    .input-frame {
-      position: relative;
-      display: inline-block;
-      width: 300px;
-      height: 200px;
-      margin: 20px auto;
-    }
-    .input-frame img {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .input-frame input {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 70%;
-      height: 40px;
-      font-size: 18px;
-      text-align: center;
-      border: none;
-      background: transparent;
-      outline: none;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 10px;
-      background: #ff9dff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .media-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .media-container video,
-    .media-container img {
-      width: 200px;
-      height: auto;
-    }
-    .steps-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 15px;
-      background: #fff0f5;
-      box-shadow: 0 -2px 5px rgb(0 0 0 / 0.1);
-      z-index: 1000;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-    .steps-nav button.active {
-      background: #9de7ff;
-    }
-    .steps-nav button.completed {
-      background: #262626;
-      color: #fff;
-    }
-    .steps-nav button.disabled {
-      background: #ccc;
-      color: #fff;
-      cursor: not-allowed;
-    }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>謎解き</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 100px 20px 20px;
+        margin: 0;
+        background: #fff5cc;
+      }
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: #fce4ec;
+        padding: 15px 0;
+        text-align: center;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .page {
+        display: none;
+        transform: translateY(20px);
+        opacity: 0;
+        transition: transform 0.5s ease, opacity 0.5s ease;
+      }
+      .page.active {
+        display: block;
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .input-frame {
+        position: relative;
+        display: inline-block;
+        width: 300px;
+        height: 200px;
+        margin: 20px auto;
+      }
+      .input-frame img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .input-frame input {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 70%;
+        height: 40px;
+        font-size: 18px;
+        text-align: center;
+        border: none;
+        background: transparent;
+        outline: none;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin-top: 10px;
+        background: #ff9dff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .media-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .media-container video,
+      .media-container img {
+        width: 200px;
+        height: auto;
+      }
+      .steps-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 15px;
+        background: #fff0f5;
+        box-shadow: 0 -2px 5px rgb(0 0 0 / 0.1);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+      }
+      .steps-nav button.active {
+        background: #9de7ff;
+      }
+      .steps-nav button.completed {
+        background: #262626;
+        color: #fff;
+      }
+      .steps-nav button.disabled {
+        background: #ccc;
+        color: #fff;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
     <div class="header"><h1>はぴば</h1></div>
 
     <!-- STEP1 -->
     <div id="step1" class="page active">
       <div class="input-frame">
-        <img src="frame.png" alt="入力枠">
-        <input id="inputStep1" placeholder="ひらがなで入力してね">
+        <img src="frame.png" alt="入力枠" />
+        <input id="inputStep1" placeholder="ひらがなで入力してね" />
       </div>
-      <br>
+      <br />
       <button onclick="checkStep1()">次へ</button>
     </div>
-    
+
     <!-- STEP2 -->
     <div id="step2" class="page">
-      <h3><strong style="color: red;">赤</strong>＝<strong style="color: blue;">赤</strong>で3セットつくり、赤のペア読め</h3>
-      <img id="puzzleImageStep2" src="step2_image.png" alt="謎解き画像">
+      <h3>
+        <strong style="color: red">赤</strong>＝<strong style="color: blue"
+          >赤</strong
+        >で3セットつくり、赤のペア読め
+      </h3>
+      <img id="puzzleImageStep2" src="step2_image.png" alt="謎解き画像" />
       <div class="media-container">
-        <div class="video-wrapper red"><video controls src="video1.mp4"></video></div>
-        <div class="video-wrapper blue"><video controls src="video2.mp4"></video></div>
-        <div class="video-wrapper yellow"><video controls src="video3.mp4"></video></div>
-        <div class="video-wrapper label"><span class="label-text">①</span><video controls src="video4.mp4"></video></div>
-        <div class="video-wrapper label"><span class="label-text">②</span><video controls src="video5.mp4"></video></div>
-        <div class="video-wrapper label"><span class="label-text">③</span><video controls src="video6.mp4"></video></div>
+        <div class="video-wrapper red">
+          <video controls src="video1.mp4"></video>
+        </div>
+        <div class="video-wrapper blue">
+          <video controls src="video2.mp4"></video>
+        </div>
+        <div class="video-wrapper yellow">
+          <video controls src="video3.mp4"></video>
+        </div>
+        <div class="video-wrapper label">
+          <span class="label-text">①</span
+          ><video controls src="video4.mp4"></video>
+        </div>
+        <div class="video-wrapper label">
+          <span class="label-text">②</span
+          ><video controls src="video5.mp4"></video>
+        </div>
+        <div class="video-wrapper label">
+          <span class="label-text">③</span
+          ><video controls src="video6.mp4"></video>
+        </div>
       </div>
       <div class="input-frame">
-        <img src="frame.png" alt="入力枠">
-        <input id="inputStep2" placeholder="ひらがなで入力してね">
+        <img src="frame.png" alt="入力枠" />
+        <input id="inputStep2" placeholder="ひらがなで入力してね" />
       </div>
-      <br>
+      <br />
       <button onclick="checkStep2()">次へ</button>
     </div>
 
     <!-- STEP3 -->
     <div id="step3" class="page">
-      <img id="puzzleImageStep3" src="step3_image.png" alt="謎解き画像">
+      <img id="puzzleImageStep3" src="step3_image.png" alt="謎解き画像" />
       <h2>⇩</h2>
       <h3>赤よめ</h3>
       <div class="input-frame">
-        <img src="frame.png" alt="入力枠">
-        <input id="inputStep3" placeholder="ひらがなで入力してね">
+        <img src="frame.png" alt="入力枠" />
+        <input id="inputStep3" placeholder="ひらがなで入力してね" />
       </div>
-      <br>
+      <br />
       <button onclick="checkStep3()">次へ</button>
     </div>
 
     <!-- LASTSTEP -->
     <div id="laststep" class="page">
       <div class="input-frame">
-        <img src="frame.png" alt="入力枠">
-        <input id="inputLast" placeholder="全てに触れろ">
+        <img src="frame.png" alt="入力枠" />
+        <input id="inputLast" placeholder="全てに触れろ" />
       </div>
       <div class="media-container">
-        <img src="frame1.png" class="touch-image" onclick="markImageTouched(0)" alt="frame1">
-        <img src="frame2.png" class="touch-image" onclick="markImageTouched(1)" alt="frame2">
-        <img src="frame3.png" class="touch-image" onclick="markImageTouched(2)" alt="frame3">
-        <img src="frame4.png" class="touch-image" onclick="markImageTouched(3)" alt="frame4">
+        <img
+          src="frame1.png"
+          class="touch-image"
+          onclick="markImageTouched(0)"
+          alt="frame1"
+        />
+        <img
+          src="frame2.png"
+          class="touch-image"
+          onclick="markImageTouched(1)"
+          alt="frame2"
+        />
+        <img
+          src="frame3.png"
+          class="touch-image"
+          onclick="markImageTouched(2)"
+          alt="frame3"
+        />
+        <img
+          src="frame4.png"
+          class="touch-image"
+          onclick="markImageTouched(3)"
+          alt="frame4"
+        />
       </div>
     </div>
 
@@ -175,17 +214,21 @@
       <h2>LAST STEP ANSWER</h2>
       <p>○○にしてやり直せ</p>
       <div class="input-frame">
-        <img src="frame.png" alt="入力枠">
-        <input id="inputLastAnswer" placeholder="ひらがなで入力してね">
+        <img src="frame.png" alt="入力枠" />
+        <input id="inputLastAnswer" placeholder="ひらがなで入力してね" />
       </div>
-      <br>
+      <br />
       <button onclick="checkLast()">送信</button>
     </div>
 
     <!-- VIDEO END -->
     <div id="videoend" class="page">
       <h2>HAPPY BIRTHDAY!!</h2>
-      <video controls src="final_video.mp4" style="width: 90%; max-width: 600px;"></video>
+      <video
+        controls
+        src="final_video.mp4"
+        style="width: 90%; max-width: 600px"
+      ></video>
     </div>
 
     <!-- STEP NAVIGATION -->
@@ -196,172 +239,159 @@
       <button id="nav-laststep" disabled>LAST STEP</button>
     </div>
 
-<script>
-  let step1Cleared = false;
-  let step2Cleared = false;
-  let step3Cleared = false;
+    <script>
+      let step1Cleared = false;
+      let step2Cleared = false;
+      let step3Cleared = false;
 
-  let touchedImages = [false, false, false, false];
-  function showStep(stepId) {
-    // 前後のフェードも伴う
-    document.querySelectorAll(".page.active").forEach(el => {
-      el.classList.remove("active");
+      let touchedImages = [false, false, false, false];
+      function showStep(stepId) {
+        // 前後のフェードも伴う
+        document.querySelectorAll(".page.active").forEach((el) => {
+          el.classList.remove("active");
 
-      // フェードアウト
-      el.classList.add("fade-out");
+          // フェードアウト
+          el.classList.add("fade-out");
 
-      setTimeout(() => {
-        el.classList.remove("fade-out");
+          setTimeout(() => {
+            el.classList.remove("fade-out");
 
-        // 次のページをフェードイン
-        document.getElementById(stepId).classList.add("active", "fade-in");
+            // 次のページをフェードイン
+            document.getElementById(stepId).classList.add("active", "fade-in");
 
-        setTimeout(() => {
-          document.getElementById(stepId).classList.remove("fade-in");
+            setTimeout(() => {
+              document.getElementById(stepId).classList.remove("fade-in");
+            }, 50);
+          }, 50);
+        });
 
-        }, 500);
-      }, 500);
-    });
+        // ナビゲーションも整理
+        document.querySelectorAll(".steps-nav button").forEach((btn) => {
+          btn.classList.remove("active");
 
-    // ナビゲーションも整理
-    document.querySelectorAll(".steps-nav button").forEach((btn) => {
-      btn.classList.remove("active");
-
-      if (btn.id === `nav-${stepId}`) {
-        btn.classList.add("active");
-
+          if (btn.id === `nav-${stepId}`) {
+            btn.classList.add("active");
+          }
+        });
       }
-    });
-  }
 
-  function checkStep1(){
-    const input = document.getElementById("inputStep1").value.trim();
-    if(input === "ひろとん"){
-      step1Cleared = true;
-      document.getElementById("nav-step2").disabled = false;
-      showStep("step2");
+      function checkStep1() {
+        const input = document.getElementById("inputStep1").value.trim();
+        if (input === "ひろとん") {
+          step1Cleared = true;
+          document.getElementById("nav-step2").disabled = false;
+          showStep("step2");
+        } else {
+          alert("答えが違います。");
+        }
+      }
 
-    } else {
-      alert("答えが違います。");
+      function checkStep2() {
+        const input = document.getElementById("inputStep2").value.trim();
+        if (input === "あさり") {
+          step2Cleared = true;
+          document.getElementById("nav-step3").disabled = false;
+          showStep("step3");
+        } else {
+          alert("答えが違います。");
+        }
+      }
 
-    }
-  }
+      function checkStep3() {
+        const input = document.getElementById("inputStep3").value.trim();
+        if (input === "えにぐま") {
+          step3Cleared = true;
+          document.getElementById("nav-laststep").disabled = false;
+          showStep("laststep");
+        } else {
+          alert("答えが違います。");
+        }
+      }
 
-  function checkStep2(){
-    const input = document.getElementById("inputStep2").value.trim();
-    if(input === "あさり"){
-      step2Cleared = true;
-      document.getElementById("nav-step3").disabled = false;
-      showStep("step3");
+      function checkLast() {
+        const input = document.getElementById("inputLastAnswer").value.trim();
+        if (input === "おせち") {
+          showStep("videoend");
+        } else {
+          alert("答えが違います。");
+        }
+      }
 
-    } else {
-      alert("答えが違います。");
+      function markImageTouched(index) {
+        touchedImages[index] = true;
+        document.getElementsByClassName("touch-image")[
+          index
+        ].style.opacity = 0.5;
 
-    }
-  }
+        if (touchedImages.every((t) => t)) {
+          setTimeout(() => showStep("lastanswer"), 500);
+        }
+      }
 
-  function checkStep3(){
-    const input = document.getElementById("inputStep3").value.trim();
-    if(input === "えにぐま"){
-      step3Cleared = true;
-      document.getElementById("nav-laststep").disabled = false;
-      showStep("laststep");
+      document.querySelectorAll(".steps-nav button").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const id = e.target.id.split("-")[1];
+          if (id === "step1") showStep(id);
+          else if (id === "step2" && step1Cleared) showStep(id);
+          else if (id === "step3" && step2Cleared) showStep(id);
+          else if (id === "laststep" && step3Cleared) showStep(id);
+          else alert("このステップにはまだ移動できません。");
+        });
+      });
+    </script>
 
-    } else {
-      alert("答えが違います。");
+    <style>
+      .page {
+        transform: translateY(20px);
+        opacity: 0;
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        position: absolute;
+        width: 100%;
+      }
 
-    }
-  }
+      .page.active {
+        transform: translateY(0);
+        opacity: 1;
+        position: relative;
+      }
 
-  function checkLast(){
-    const input = document.getElementById("inputLastAnswer").value.trim();
-    if(input === "おせち"){
-      showStep("videoend");
+      .page.fade-out {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
 
-    } else {
-      alert("答えが違います。");
+      .steps-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 10px 0;
+        background: #fff;
+        box-shadow: 0 -5px 5px #00000033;
+        text-align: center;
+        z-index: 1000;
+      }
 
-    }
-  }
+      .steps-nav button {
+        padding: 10px 20px;
+        margin: 0 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 20px;
+        color: #fff;
+        background: #888;
+        cursor: pointer;
+      }
 
-  function markImageTouched(index){
-    touchedImages[index] = true;
-    document.getElementsByClassName("touch-image")[index].style.opacity = 0.5;
+      .steps-nav button.active {
+        background: #06c;
+      }
 
-    if (touchedImages.every(t => t)) {
-      setTimeout(() => showStep("lastanswer"), 500);
-    }
-  }
-
-  document.querySelectorAll('.steps-nav button').forEach((btn) => {
-    btn.addEventListener('click',(e) => {
-      const id = e.target.id.split('-')[1];
-      if(id==='step1') showStep(id);
-      else if(id==='step2' && step1Cleared) showStep(id);
-      else if(id==='step3' && step2Cleared) showStep(id);
-      else if(id==='laststep' && step3Cleared) showStep(id);
-      else alert("このステップにはまだ移動できません。");
-
-    });
-  });
-
-
-</script>
-
-<style>
-.page {
-  transform: translateY(20px);
- opacity: 0;
-  transition: transform 0.5s ease, opacity 0.5s ease;
-  position: absolute;
-  width: 100%;
-}
-
-.page.active {
-  transform: translateY(0);
- opacity: 1;
-  position: relative;
-}
-
-.page.fade-out {
-  transform: translateY(-20px);
- opacity: 0;
-}
-
-.steps-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px 0;
-  background: #fff;
-  box-shadow: 0 -5px 5px #00000033;
-  text-align: center;
-  z-index: 1000;
-}
-
-.steps-nav button {
-  padding: 10px 20px;
-  margin: 0 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 20px;
-  color: #fff;
-  background: #888;
-  cursor: pointer;
-}
-
-.steps-nav button.active {
-  background: #06c;
-}
-
-.steps-nav button:disabled {
-  background: #555;
-  color: #fff;
-  cursor: not-allowed;
-}
-
-</style>
-
-</body>
+      .steps-nav button:disabled {
+        background: #555;
+        color: #fff;
+        cursor: not-allowed;
+      }
+    </style>
+  </body>
 </html>

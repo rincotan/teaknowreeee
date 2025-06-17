@@ -9,18 +9,19 @@
         text-align: center;
         padding: 100px 20px 20px;
         margin: 0;
-        background: #fff5cc;
+        background: #ffffff;
       }
       .header {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        background: #fce4ec;
+        background: #bcf0ff;
         padding: 15px 0;
         text-align: center;
         z-index: 1000;
         box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+        color: #2f3542;
       }
       .header h1 {
         margin: 0;
@@ -66,10 +67,11 @@
         padding: 10px 20px;
         font-size: 16px;
         margin-top: 10px;
-        background: #ff9dff;
+        background: #2f3542;
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        color: #ffffff;
       }
       .media-container {
         display: flex;
@@ -97,15 +99,15 @@
         gap: 20px;
       }
       .steps-nav button.active {
-        background: #9de7ff;
+        background: #00bfff;
       }
       .steps-nav button.completed {
         background: #262626;
         color: #fff;
       }
       .steps-nav button.disabled {
-        background: #ccc;
-        color: #fff;
+        background: #ff0000;
+        color: #00ff15;
         cursor: not-allowed;
       }
     </style>
@@ -164,7 +166,7 @@
 
     <!-- STEP3 -->
     <div id="step3" class="page">
-      <img id="puzzleImageStep3" src="step3_image.png" alt="謎解き画像" />
+      <img id="puzzleImageStep3" src="step3_image.png" alt="謎解き画像" style="margin-top: 10px; max-width: 30%; height: auto;">
       <h2>⇩</h2>
       <h3>赤よめ</h3>
       <div class="input-frame">
@@ -179,7 +181,7 @@
     <div id="laststep" class="page">
       <div class="input-frame">
         <img src="frame.png" alt="入力枠" />
-        <input id="inputLast" placeholder="全てに触れろ" />
+        <h2>全て触れろ</h2>
       </div>
       <div class="media-container">
         <img
@@ -379,16 +381,16 @@
         border: none;
         border-radius: 20px;
         color: #fff;
-        background: #888;
+        background: #2f3542;
         cursor: pointer;
       }
 
       .steps-nav button.active {
-        background: #06c;
+        background: #22afD8;
       }
 
       .steps-nav button:disabled {
-        background: #555;
+        background: #d5dae3;
         color: #fff;
         cursor: not-allowed;
       }

@@ -297,6 +297,44 @@
       </button>
     </div>
 
+    <!-- TOOL PAGE -->
+    <div id="toolpage" class="page">
+      <h2>天からのお告げ</h2>
+      <p>選択肢と入力欄に特定の言葉を入れると、天からなにやら便利なものが届くらしい…？</p>
+      <p>入力欄には「〇〇したい」って書かないと天は受け取ってくれないっぽい</p>
+      <p>後は勘で使ってね！</p>
+
+      <div style="margin: 20px 0">
+        <label for="toolSelect">選択肢:</label>
+        <select id="toolSelect">
+          <option value="赤">赤</option>
+          <option value="青">青</option>
+          <option value="黄">黄</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <input id="toolInput" placeholder="ひらがなで入力してね" />
+      </div>
+
+      <br />
+      <button onclick="checkTool()">確定</button>
+      <br /><br />
+      <div id="toolVideoContainer" style="display: none">
+        <video
+          controls
+          src="tool_video.mp4"
+          style="width: 80%; max-width: 600px"
+        ></video>
+      </div>
+
+      <br />
+      <button onclick="showStep('lastanswer')">LASTに戻る</button>
+    </div>
+
     <!-- VIDEO END -->
     <div id="videoend" class="page">
       <h1>おめでとう！</h1>
@@ -315,6 +353,8 @@
       <button id="nav-step3" disabled>STEP3</button>
       <button id="nav-laststep" disabled>LAST STEP</button>
     </div>
+
+
 
     <script>
       let step1Cleared = false;
@@ -511,41 +551,6 @@
       }
     </style>
 
-    <!-- TOOL PAGE -->
-    <div id="toolpage" class="page">
-      <h2>天からのお告げ</h2>
-      <p>入力欄と選択肢を使って、特定の条件で動画が出てくるよ。</p>
-
-      <div style="margin: 20px 0">
-        <label for="toolSelect">選択肢:</label>
-        <select id="toolSelect">
-          <option value="赤">赤</option>
-          <option value="青">青</option>
-          <option value="黄">黄</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-        </select>
-      </div>
-
-      <div class="input-frame">
-        <img src="frame.png" alt="入力枠" />
-        <input id="toolInput" placeholder="ここに入力してね" />
-      </div>
-
-      <br />
-      <button onclick="checkTool()">確定</button>
-      <br /><br />
-      <div id="toolVideoContainer" style="display: none">
-        <video
-          controls
-          src="tool_video.mp4"
-          style="width: 80%; max-width: 600px"
-        ></video>
-      </div>
-
-      <br />
-      <button onclick="showStep('lastanswer')">LASTに戻る</button>
-    </div>
+    
   </body>
 </html>

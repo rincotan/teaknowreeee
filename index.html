@@ -74,7 +74,7 @@
         color: #ffffff;
       }
       .next-button:hover {
-        background: #D03C69; 
+        background: #d03c69;
       }
 
       .media-container {
@@ -84,7 +84,8 @@
         gap: 10px;
         margin-top: 20px;
       }
-      .media-container video,.media-container img {
+      .media-container video,
+      .media-container img {
         width: 200px;
         height: auto;
       }
@@ -180,15 +181,21 @@
       </div>
       <br />
       <button class="next-button" onclick="checkStep1()">次へ</button>
-
     </div>
 
     <!-- STEP2 -->
     <div id="step2" class="page">
       <h3>
-        <strong style="color: red">赤</strong>＝<strong style="color: blue">赤</strong>で3セットつくり、赤のペア同時に再生し読め
+        <strong style="color: red">赤</strong>＝<strong style="color: blue"
+          >赤</strong
+        >で3セットつくり、赤のペア同時に再生し読め
       </h3>
-      <img id="puzzleImageStep2" src="step2_image.png" alt="謎解き画像" style="margin-top: 10px; max-width: 30%; height: auto;" >
+      <img
+        id="puzzleImageStep2"
+        src="step2_image.png"
+        alt="謎解き画像"
+        style="margin-top: 10px; max-width: 30%; height: auto"
+      />
       <div class="media-container">
         <div class="video-wrapper red">
           <video controls src="video1.mp4"></video>
@@ -218,12 +225,16 @@
       </div>
       <br />
       <button class="next-button" onclick="checkStep2()">次へ</button>
-
     </div>
 
     <!-- STEP3 -->
     <div id="step3" class="page">
-      <img id="puzzleImageStep3" src="step3_image.png" alt="謎解き画像" style="margin-top: 10px; max-width: 30%; height: auto;">
+      <img
+        id="puzzleImageStep3"
+        src="step3_image.png"
+        alt="謎解き画像"
+        style="margin-top: 10px; max-width: 30%; height: auto"
+      />
       <h2>⇩</h2>
       <h3>赤上から</h3>
       <div class="input-frame">
@@ -237,10 +248,11 @@
     <!-- LASTSTEP -->
     <div id="laststep" class="page">
       <div class="input-frame">
-        <img src="frame.png" alt="入力枠" /><h2>全て触れろ</h2>
+        <img src="frame.png" alt="入力枠" />
+        <h2>全て触れろ</h2>
       </div>
-      <div class="media-container">
-        <img
+      <div class="media-container" id="media-container">
+        <!-- <img
           src="frame1.png"
           class="touch-image"
           onclick="markImageTouched(0)"
@@ -263,21 +275,26 @@
           class="touch-image"
           onclick="markImageTouched(3)"
           alt="frame4"
-        />
+        /> -->
       </div>
     </div>
 
     <!-- LAST STEP ANSWER -->
     <div id="lastanswer" class="page">
-      <img src="last_image.png" alt="指示文" style="margin-top: 10px; max-width: 30%; height: auto;">
+      <img
+        src="last_image.png"
+        alt="指示文"
+        style="margin-top: 10px; max-width: 30%; height: auto"
+      />
       <div class="input-group">
         <input id="inputLastAnswer" placeholder="ひらがなで入力してね" />
       </div>
       <button class="next-button" onclick="checkLast()">送信</button>
 
       <br /><br />
-      <button class="next-button" onclick="showStep('toolpage')">お告げをきく</button>
-
+      <button class="next-button" onclick="showStep('toolpage')">
+        お告げをきく
+      </button>
     </div>
 
     <!-- VIDEO END -->
@@ -372,7 +389,9 @@
 
       function markImageTouched(index) {
         touchedImages[index] = true;
-        document.getElementsByClassName("touch-image")[index].style.opacity = 0.5;
+        document.getElementsByClassName("touch-image")[
+          index
+        ].style.opacity = 0.5;
         if (touchedImages.every((t) => t)) {
           setTimeout(() => showStep("lastanswer"), 500);
         }
@@ -403,8 +422,37 @@
           });
         });
       });
-    </script>
 
+      // 配列①：画像のURLリスト
+      const imageSources = [
+        "frame1.png",
+        "frame2.png",
+        "frame3.png",
+        "frame4.png",
+      ];
+
+      // 配列②：画像の表示位置（左上座標）
+      const imagePositions = [
+        { x: 50, y: 30 },
+        { x: 200, y: 150 },
+        { x: 400, y: 80 },
+        { x: 600, y: 200 },
+      ];
+
+      const container = document.getElementById("media-container");
+
+      imageSources.forEach((src, index) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.className = "touch-image";
+        img.style.left = `${imagePositions[index].x}px`;
+        img.style.top = `${imagePositions[index].y}px`;
+        container.appendChild(img);
+        img.addEventListener("click", () => {
+          markImageTouched(index);
+        });
+      });
+    </script>
 
     <style>
       .page {
@@ -450,7 +498,7 @@
       }
 
       .steps-nav button.active {
-        background: #22afD8;
+        background: #22afd8;
       }
 
       .steps-nav button:disabled {
@@ -458,40 +506,46 @@
         color: #fff;
         cursor: not-allowed;
       }
+      .touch-image {
+        position: absolute;
+      }
     </style>
 
-  <!-- TOOL PAGE -->
-  <div id="toolpage" class="page">
-    <h2>天からのお告げ</h2>
-    <p>入力欄と選択肢を使って、特定の条件で動画が出てくるよ。</p>
+    <!-- TOOL PAGE -->
+    <div id="toolpage" class="page">
+      <h2>天からのお告げ</h2>
+      <p>入力欄と選択肢を使って、特定の条件で動画が出てくるよ。</p>
 
-    <div style="margin: 20px 0;">
-      <label for="toolSelect">選択肢:</label>
-      <select id="toolSelect">
-        <option value="赤">赤</option>
-        <option value="青">青</option>
-        <option value="黄">黄</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-      </select>
+      <div style="margin: 20px 0">
+        <label for="toolSelect">選択肢:</label>
+        <select id="toolSelect">
+          <option value="赤">赤</option>
+          <option value="青">青</option>
+          <option value="黄">黄</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+
+      <div class="input-frame">
+        <img src="frame.png" alt="入力枠" />
+        <input id="toolInput" placeholder="ここに入力してね" />
+      </div>
+
+      <br />
+      <button onclick="checkTool()">確定</button>
+      <br /><br />
+      <div id="toolVideoContainer" style="display: none">
+        <video
+          controls
+          src="tool_video.mp4"
+          style="width: 80%; max-width: 600px"
+        ></video>
+      </div>
+
+      <br />
+      <button onclick="showStep('lastanswer')">LASTに戻る</button>
     </div>
-
-    <div class="input-frame">
-      <img src="frame.png" alt="入力枠" />
-      <input id="toolInput" placeholder="ここに入力してね" />
-    </div>
-
-    <br />
-    <button onclick="checkTool()">確定</button>
-    <br /><br />
-    <div id="toolVideoContainer" style="display: none;">
-      <video controls src="tool_video.mp4" style="width: 80%; max-width: 600px;"></video>
-    </div>
-
-    <br />
-    <button onclick="showStep('lastanswer')">LASTに戻る</button>
-  </div>
-
   </body>
 </html>

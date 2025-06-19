@@ -107,6 +107,40 @@
         border-color: yellow;
       }
 
+      .input-group {
+        display: flex;
+        justify-content: center;
+        width: 400px;
+        height: 60px;
+        margin: 20px auto;
+        border: 2px solid #2f3542;
+        border-radius: 4px;
+        overflow: hidden;
+        background-color: white;
+      }
+
+      .input-group input {
+        flex: 1;
+        border: none;
+        font-size: 20px;
+        text-align: center;
+        outline: none;
+        background: transparent;
+      }
+
+      .input-group input::placeholder {
+        color: #999;
+        font-size: 18px;
+      }
+
+      .input-group button {
+        background: #2f3542;
+        color: #fff;
+        border: none;
+        padding: 0 20px;
+        font-size: 18px;
+        cursor: pointer;
+      }
 
       .steps-nav {
         position: fixed;
@@ -235,13 +269,10 @@
 
     <!-- LAST STEP ANSWER -->
     <div id="lastanswer" class="page">
-      <h2>LAST</h2>
-      <p>○○にしてやり直せ</p>
-      <div class="input-frame">
-        <!--<img src="frame.png" alt="入力枠" />-->
+      <img src="last_image.png" alt="指示文" style="margin-top: 10px; max-width: 30%; height: auto;">
+      <div class="input-group">
         <input id="inputLastAnswer" placeholder="ひらがなで入力してね" />
       </div>
-      <br />
       <button class="next-button" onclick="checkLast()">送信</button>
     </div>
 

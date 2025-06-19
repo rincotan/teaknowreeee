@@ -274,6 +274,10 @@
         <input id="inputLastAnswer" placeholder="ひらがなで入力してね" />
       </div>
       <button class="next-button" onclick="checkLast()">送信</button>
+
+      <br /><br />
+      <button class="next-button" onclick="showStep('toolpage')">ツールに飛ぶ</button>
+
     </div>
 
     <!-- VIDEO END -->
@@ -302,17 +306,12 @@
 
       let touchedImages = [false, false, false, false];
       function showStep(stepId) {
-        // 前後のフェードも伴う
         document.querySelectorAll(".page.active").forEach((el) => {
           el.classList.remove("active");
-
-          // フェードアウト
           el.classList.add("fade-out");
 
           setTimeout(() => {
             el.classList.remove("fade-out");
-
-            // 次のページをフェードイン
             document.getElementById(stepId).classList.add("active", "fade-in");
 
             setTimeout(() => {
@@ -321,10 +320,8 @@
           }, 50);
         });
 
-        // ナビゲーションも整理
         document.querySelectorAll(".steps-nav button").forEach((btn) => {
           btn.classList.remove("active");
-
           if (btn.id === `nav-${stepId}`) {
             btn.classList.add("active");
           }
@@ -375,26 +372,39 @@
 
       function markImageTouched(index) {
         touchedImages[index] = true;
-        document.getElementsByClassName("touch-image")[
-          index
-        ].style.opacity = 0.5;
-
+        document.getElementsByClassName("touch-image")[index].style.opacity = 0.5;
         if (touchedImages.every((t) => t)) {
           setTimeout(() => showStep("lastanswer"), 500);
         }
       }
 
-      document.querySelectorAll(".steps-nav button").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-          const id = e.target.id.split("-")[1];
-          if (id === "step1") showStep(id);
-          else if (id === "step2" && step1Cleared) showStep(id);
-          else if (id === "step3" && step2Cleared) showStep(id);
-          else if (id === "laststep" && step3Cleared) showStep(id);
-          else alert("このステップにはまだ移動できません。");
+      function checkTool() {
+        const selected = document.getElementById("toolSelect").value;
+        const input = document.getElementById("toolInput").value.trim();
+
+        if (selected === "黄" && input === "ぎゃくさいせいしたい") {
+          document.getElementById("toolVideoContainer").style.display = "block";
+        } else {
+          alert("条件が一致しないよ");
+          document.getElementById("toolVideoContainer").style.display = "none";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".steps-nav button").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const id = e.target.id.split("-")[1];
+            if (id === "step1") showStep(id);
+            else if (id === "step2" && step1Cleared) showStep(id);
+            else if (id === "step3" && step2Cleared) showStep(id);
+            else if (id === "laststep" && step3Cleared) showStep(id);
+            else if (id === "toolpage" && !btn.disabled) showStep("toolpage");
+            else alert("このステップにはまだ移動できません。");
+          });
         });
       });
     </script>
+
 
     <style>
       .page {
@@ -449,5 +459,39 @@
         cursor: not-allowed;
       }
     </style>
+
+  <!-- TOOL PAGE -->
+  <div id="toolpage" class="page">
+    <h2>天からのお告げ</h2>
+    <p>入力欄と選択肢を使って、特定の条件で動画が出てくるよ。</p>
+
+    <div style="margin: 20px 0;">
+      <label for="toolSelect">選択肢:</label>
+      <select id="toolSelect">
+        <option value="赤">赤</option>
+        <option value="青">青</option>
+        <option value="黄">黄</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+
+    <div class="input-frame">
+      <img src="frame.png" alt="入力枠" />
+      <input id="toolInput" placeholder="ここに入力してね" />
+    </div>
+
+    <br />
+    <button onclick="checkTool()">確定</button>
+    <br /><br />
+    <div id="toolVideoContainer" style="display: none;">
+      <video controls src="tool_video.mp4" style="width: 80%; max-width: 600px;"></video>
+    </div>
+
+    <br />
+    <button onclick="showStep('lastanswer')">LASTに戻る</button>
+  </div>
+
   </body>
 </html>

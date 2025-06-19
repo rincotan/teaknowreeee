@@ -7,7 +7,7 @@
       body {
         font-family: sans-serif;
         text-align: center;
-        padding: 100px 20px 20px;
+        padding: 100px 20px 100px;
         margin: 0;
         background: #ffffff;
       }
@@ -73,6 +73,10 @@
         cursor: pointer;
         color: #ffffff;
       }
+      .next-button:hover {
+        background: #D03C69; 
+      }
+
       .media-container {
         display: flex;
         flex-wrap: wrap;
@@ -80,8 +84,7 @@
         gap: 10px;
         margin-top: 20px;
       }
-      .media-container video,
-      .media-container img {
+      .media-container video,.media-container img {
         width: 200px;
         height: auto;
       }
@@ -142,7 +145,8 @@
         <input id="inputStep1" placeholder="ひらがなで入力してね" />
       </div>
       <br />
-      <button onclick="checkStep1()">次へ</button>
+      <button class="next-button" onclick="checkStep1()">次へ</button>
+
     </div>
 
     <!-- STEP2 -->
@@ -150,7 +154,7 @@
       <h3>
         <strong style="color: red">赤</strong>＝<strong style="color: blue">赤</strong>で3セットつくり、赤のペア同時に読め
       </h3>
-      <img id="puzzleImageStep2" src="step2_image.png" alt="謎解き画像" />
+      <img id="puzzleImageStep2" src="step2_image.png" alt="謎解き画像" style="margin-top: 10px; max-width: 30%; height: auto;" >
       <div class="media-container">
         <div class="video-wrapper red">
           <video controls src="video1.mp4"></video>
@@ -179,7 +183,8 @@
         <input id="inputStep2" placeholder="ひらがなで入力してね" />
       </div>
       <br />
-      <button onclick="checkStep2()">次へ</button>
+      <button class="next-button" onclick="checkStep2()">次へ</button>
+
     </div>
 
     <!-- STEP3 -->
@@ -192,7 +197,7 @@
         <input id="inputStep3" placeholder="ひらがなで入力してね" />
       </div>
       <br />
-      <button onclick="checkStep3()">次へ</button>
+      <button class="next-button" onclick="checkStep3()">次へ</button>
     </div>
 
     <!-- LASTSTEP -->
@@ -237,12 +242,13 @@
         <input id="inputLastAnswer" placeholder="ひらがなで入力してね" />
       </div>
       <br />
-      <button onclick="checkLast()">送信</button>
+      <button class="next-button" onclick="checkLast()">送信</button>
     </div>
 
     <!-- VIDEO END -->
     <div id="videoend" class="page">
-      <h2>HAPPY BIRTHDAY!!</h2>
+      <h1>おめでとう！</h1>
+      <h1>すべての謎を解き明かした…！</h1>
       <video
         controls
         src="final_video.mp4"

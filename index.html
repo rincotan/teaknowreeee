@@ -29,29 +29,58 @@
         alt="謎解き画像"
         style="margin-top: 10px; max-width: 30%; height: auto"
       />
+
       <div class="media-container">
-        <div class="video-wrapper red">
-          <span class="label-text" style="color: red">赤</span>
-          <video controls src="video/赤.mp4"></video>
+        <div class="media-col">
+          <div class="video-row">
+            <div class="video-wrapper red">
+              <span class="label-text" style="color: red">赤</span>
+              <video controls src="video/赤.mp4"></video>
+            </div>
+            <div class="dot" data-id="red"></div>
+          </div>
+          <div class="video-row">
+            <div class="video-wrapper blue">
+              <span class="label-text" style="color: blue">青</span>
+              <video controls src="video/青.mp4"></video>
+            </div>
+            <div class="dot" data-id="blue"></div>
+          </div>
+          <div class="video-row">
+            <div class="video-wrapper yellow">
+              <span class="label-text" style="color: #ffbd59">黄</span>
+              <video controls src="video/黄.mp4"></video>
+            </div>
+            <div class="dot" data-id="yellow"></div>
+          </div>
         </div>
-        <div class="video-wrapper blue">
-          <span class="label-text" style="color: blue">青</span>
-          <video controls src="video/青.mp4"></video>
+        <div class="media-col">
+          <div class="video-row">
+            <div class="dot" data-id="1"></div>
+            <div class="video-wrapper label">
+              <span class="label-text">①</span>
+              <video controls src="video/1.mp4"></video>
+            </div>
+          </div>
+          <div class="video-row">
+            <div class="dot" data-id="2"></div>
+            <div class="video-wrapper label">
+              <span class="label-text">②</span>
+              <video controls src="video/2.mp4"></video>
+            </div>
+          </div>
+          <div class="video-row">
+            <div class="dot" data-id="3"></div>
+            <div class="video-wrapper label">
+              <span class="label-text">③</span>
+              <video controls src="video/3.mp4"></video>
+            </div>
+          </div>
         </div>
-        <div class="video-wrapper yellow">
-          <span class="label-text" style="color: #ffbd59">黄</span>
-          <video controls src="video/黄.mp4"></video>
-        </div>
-        <div class="video-wrapper label">
-          <span class="label-text">①</span><video controls src="video/1.mp4"></video>
-        </div>
-        <div class="video-wrapper label">
-          <span class="label-text">②</span><video controls src="video/2.mp4"></video>
-        </div>
-        <div class="video-wrapper label">
-          <span class="label-text">③</span><video controls src="video/3.mp4"></video>
-        </div>
+        <!-- SVGで線を描画 -->
+        <svg id="dot-lines" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:10;"></svg>
       </div>
+
       <div class="input-frame">
         <img src="frame.png" alt="入力枠" />
         <input id="inputStep2" placeholder="ひらがなで入力してね" />
@@ -304,6 +333,164 @@
         }
       }
 
+      document.addEventListener("DOMContentLoaded", () => {
+        const svg = document.getElementById("dot-lines");
+        let dragging = false;
+        let startDot = null;
+        let tempLine = null;
+
+        // どの点がどの点と結ばれているかを記録
+        const connections = {}; // 例: {red: "2", "2": "red", ...}
+
+        // 左側・右側の点を区別
+        const leftIds = ["red", "blue", "yellow"];
+        const rightIds = ["1", "2", "3"];
+
+        // ドットの中心座標を取得
+        function getDotCenter(dot) {
+          const rect = dot.getBoundingClientRect();
+          const parentRect = svg.parentElement.getBoundingClientRect();
+          return {
+            x: rect.left + rect.width / 2 - parentRect.left,
+            y: rect.top + rect.height / 2 - parentRect.top
+          };
+        }
+
+        // ドットをすべて取得
+        const dots = document.querySelectorAll(".dot");
+
+        // data-idからdot要素を取得
+        function getDotById(id) {
+          return Array.from(dots).find(dot => dot.dataset.id === id);
+        }
+
+        // 線をすべて消す
+        function clearLines() {
+          while (svg.firstChild) svg.removeChild(svg.firstChild);
+        }
+
+        // 現在のconnectionsからSVG線を再描画
+        function redrawLines() {
+          clearLines();
+          leftIds.concat(rightIds).forEach(id => {
+            const pairId = connections[id];
+            // 片方向だけ描画（重複防止）
+            if (pairId && id < pairId) {
+              const dot1 = getDotById(id);
+              const dot2 = getDotById(pairId);
+              if (dot1 && dot2) {
+                const { x: x1, y: y1 } = getDotCenter(dot1);
+                const { x: x2, y: y2 } = getDotCenter(dot2);
+
+                // 線の色を決定
+                let color = "#000";
+                if (id === "red" || pairId === "red") color = "red";
+                else if (id === "blue" || pairId === "blue") color = "blue";
+                else if (id === "yellow" || pairId === "yellow") color = "#ffbd59";
+
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", x1);
+                line.setAttribute("y1", y1);
+                line.setAttribute("x2", x2);
+                line.setAttribute("y2", y2);
+                line.setAttribute("stroke", color);
+                line.setAttribute("stroke-width", "4");
+                line.setAttribute("stroke-linecap", "round");
+                svg.appendChild(line);
+              }
+            }
+          });
+        }
+
+        dots.forEach(dot => {
+          dot.addEventListener("mousedown", e => {
+            e.preventDefault(); // ← これでテキスト選択防止
+            dragging = true;
+            startDot = dot;
+            const { x, y } = getDotCenter(dot);
+            tempLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            tempLine.setAttribute("x1", x);
+            tempLine.setAttribute("y1", y);
+            tempLine.setAttribute("x2", x);
+            tempLine.setAttribute("y2", y);
+
+            // 仮線の色を始点の色に
+            let color = "#000";
+            if (dot.dataset.id === "red") color = "red";
+            else if (dot.dataset.id === "blue") color = "blue";
+            else if (dot.dataset.id === "yellow") color = "#ffbd59";
+            tempLine.setAttribute("stroke", color);
+
+            tempLine.setAttribute("stroke-width", "4");
+            tempLine.setAttribute("stroke-linecap", "round");
+            svg.appendChild(tempLine);
+          });
+        });
+
+        document.addEventListener("mousemove", e => {
+          if (dragging && tempLine) {
+            const parentRect = svg.parentElement.getBoundingClientRect();
+            const x = e.clientX - parentRect.left;
+            const y = e.clientY - parentRect.top;
+            tempLine.setAttribute("x2", x);
+            tempLine.setAttribute("y2", y);
+          }
+        });
+
+        document.addEventListener("mouseup", e => {
+          if (dragging && tempLine) {
+            let found = null;
+            let minDist = Infinity;
+            const RADIUS = 8;
+
+            dots.forEach(dot => {
+              const rect = dot.getBoundingClientRect();
+              const cx = rect.left + rect.width / 2;
+              const cy = rect.top + rect.height / 2;
+              const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+              if (dist < RADIUS && dot !== startDot && dist < minDist) {
+                found = dot;
+                minDist = dist;
+              }
+            });
+
+            const startId = startDot.dataset.id;
+            const endId = found ? found.dataset.id : null;
+
+            const isLeftToRight = leftIds.includes(startId) && rightIds.includes(endId);
+            const isRightToLeft = rightIds.includes(startId) && leftIds.includes(endId);
+
+            if (
+              found &&
+              (isLeftToRight || isRightToLeft)
+            ) {
+              // 既存の接続を解除（新しい線だけ残す）
+              if (connections[startId]) {
+                const oldPair = connections[startId];
+                delete connections[oldPair];
+                delete connections[startId];
+              }
+              if (connections[endId]) {
+                const oldPair = connections[endId];
+                delete connections[oldPair];
+                delete connections[endId];
+              }
+              // 新しい接続を記録
+              connections[startId] = endId;
+              connections[endId] = startId;
+              redrawLines();
+            } else {
+              // 不正な接続なら線を消す
+              svg.removeChild(tempLine);
+            }
+
+            tempLine = null;
+            dragging = false;
+            startDot = null;
+          }
+        });
+      });
+
       function resetLastStep() {
         const container = document.getElementById("media-container");
         container.innerHTML = ""; // 画像全削除
@@ -510,7 +697,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 10px;
+        gap: 300px;
         margin-top: 20px;
       }
       .media-container video,
@@ -520,10 +707,42 @@
         display: block;
       }
 
+      .media-col {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .video-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+      }
+      .dot {
+        width: 18px;
+        height: 18px;
+        background: #222;
+        border-radius: 50%;
+        margin: 0 5px;
+        cursor: pointer;
+        z-index: 20;
+        position: relative;
+        pointer-events: auto;
+      }
+      .label-text, .video-wrapper, .video-row, .media-col {
+        user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+      }
+      .media-container {
+        position: relative; /* SVGを重ねるため */
+      }
+
       .video-wrapper {
         position: relative;
-        display: inline-block;
-        border: 4px solid transparent; /* ← これをベースに色を切り替えてる */
+        display: inline-block,flex;
+        border: 4px solid transparent;
         border-color: black;
         border-radius: 8px;
         overflow: hidden;

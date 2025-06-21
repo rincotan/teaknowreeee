@@ -6,6 +6,18 @@
   </head>
   <body>
     <div class="header"><h1>HAPPY BIRTHDAY!!!!!!!!!!!!!!</h1></div>
+    
+    <!-- ★テスト用ページジャンプボタン（後で消してOK） -->
+    <div style="position:fixed;top:60px;left:10px;z-index:2000;background:#ff0;padding:10px;border:2px solid #f00;">
+      <b>テストジャンプ</b><br>
+      <button onclick="showStep('step1')">STEP1</button>
+      <button onclick="showStep('step2')">STEP2</button>
+      <button onclick="showStep('step3')">STEP3</button>
+      <button onclick="showStep('laststep')">LAST</button>
+      <button onclick="showStep('lastanswer')">LASTLAST</button>
+      <button onclick="showStep('toolpage')">TOOL</button>
+      <button onclick="showStep('videoend')">END</button>
+    </div>
 
     <!-- STEP1 -->
     <div id="step1" class="page active">
@@ -83,9 +95,9 @@
 
       <div class="input-frame">
         <img src="frame.png" alt="入力枠" />
-        <input id="inputStep2" placeholder="ひらがなで入力してね" />
+        <input id="inputStep2" placeholder="ひらがな" />
       </div>
-      <br />
+      <br/>
       <button class="next-button" onclick="checkStep2()">次へ</button>
     </div>
 
@@ -100,7 +112,7 @@
       <h2>⇩</h2>
       <h3>赤上から</h3>
       <div class="input-frame">
-        <img src="frame.png" alt="入力枠" />
+        <img src="frame in frame.png" alt="入力枠" />
         <input id="inputStep3" placeholder="ひらがなで入力してね" />
       </div>
       <br />
@@ -110,7 +122,7 @@
     <!-- LASTSTEP -->
     <div id="laststep" class="page">
       <div class="input-frame">
-        <img src="frame.png" alt="入力枠" />
+        <img src="frame.png" alt="入力枠" id="laststep-frame"/>
       </div>
       <h2>全て触れろ</h2>
       <button onclick="confirmTouched()">確定</button>
@@ -202,12 +214,7 @@
       let touchedImages = [false, false, false, false];
       let dummyTouched = false; // ← NEW!!　←？？？？？？？？？？
 
-      function markImageTouched(index, imgEl) {
-        if (!touchedImages[index]) {
-          touchedImages[index] = true;
-          imgEl.style.opacity = '0.5';
-        }
-      }
+
 
       function showStep(stepId) {
         // 1. 前のページをfade-out
@@ -316,22 +323,8 @@
         });
       });
 
-      function confirmTouched() {
-        if (dummyTouched) {
-          alert("違うらしい");
-          resetLastStep();
-          return;
-        }
 
-        if (touchedImages.every(t => t)) {
-          showStep("lastanswer");
-          laststep_inited = true;
-          document.getElementById("nav-lastanswer").disabled = false;
-        } else {
-          alert("違うらしい");
-          resetLastStep();
-        }
-      }
+
 
       document.addEventListener("DOMContentLoaded", () => {
         const svg = document.getElementById("dot-lines");
@@ -494,10 +487,13 @@
       function resetLastStep() {
         const container = document.getElementById("media-container");
         container.innerHTML = ""; // 画像全削除
-        touchedImages = [false, false, false, false]; // 状態リセット
-        dummyTouched = false; // ← ダミーも忘れずリセット
+        touchedImages = [false, false, false, false, false, false]; // ac/1〜5.png + frame.png
+        dummyTouched = false;
 
-        const correctImages = ['ac/1.png', 'ac/2.png', 'ac/3.png', 'ac/4.png'];
+        // 正解画像（frame.pngはmedia-containerには入れない）
+        const correctImages = [
+          'ac/1.png', 'ac/2.png', 'ac/3.png', 'ac/4.png', 'ac/5.png'
+        ];
         const dummyImages = Array.from({ length: 30 }, (_, i) => `dummy/dummy${i + 1}.png`);
 
         const allImages = [
@@ -507,21 +503,10 @@
 
         allImages.sort(() => Math.random() - 0.5);
 
-        const containerWidth = container.clientWidth;
-        const containerHeight = container.clientHeight;
-
-        const placedRects = [];
-
         allImages.forEach((item) => {
           const img = document.createElement("img");
           img.src = item.src;
           img.className = "touch-image";
-
-          const pos = findNonOverlappingPosition(placedRects, containerWidth, containerHeight);
-          img.style.left = `${pos.x}px`;
-          img.style.top = `${pos.y}px`;
-
-          placedRects.push({ ...pos, width: 80, height: 80 });
 
           img.addEventListener("click", () => {
             img.style.opacity = '0.5';
@@ -534,13 +519,51 @@
 
           container.appendChild(img);
         });
+
+        // input枠のframe.pngも押せるように
+        const inputFrame = document.getElementById("laststep-frame");
+        if (inputFrame) {
+          inputFrame.style.cursor = "pointer";
+          inputFrame.style.opacity = touchedImages[5] ? "0.5" : "1";
+          inputFrame.onclick = function() {
+            if (!touchedImages[5]) {
+              touchedImages[5] = true;
+              inputFrame.style.opacity = "0.5";
+            }
+          };
+        }
+      }
+
+      // markImageTouchedも touchedImages.length に対応
+      function markImageTouched(index, imgEl) {
+        if (!touchedImages[index]) {
+          touchedImages[index] = true;
+          imgEl.style.opacity = '0.5';
+        }
+      }
+
+      function confirmTouched() {
+        if (dummyTouched) {
+          alert("違うらしい");
+          resetLastStep();
+          return;
+        }
+
+        if (touchedImages.every(t => t)) {
+          showStep("lastanswer");
+          laststep_inited = true;
+          document.getElementById("nav-lastanswer").disabled = false;
+        } else {
+          alert("違うらしい");
+          resetLastStep();
+        }
       }
 
 
 
 
       // 正解画像とダミー画像を含める
-      const correctImages = ["ac/1.png", "ac/2.png", "ac/3.png", "ac/4.png"];
+      const correctImages = ["ac/1.png", "ac/2.png", "ac/3.png", "ac/4.png","ac/5.png"];
       const dummyImages = Array.from({ length: 30 }, (_, i) => `dummy/dummy${i + 1}.png`);
 
       const container = document.getElementById("media-container");
@@ -569,27 +592,27 @@
       }
 
       // 空いてる位置を探す関数
-      function findNonOverlappingPosition(existingRects, containerWidth, containerHeight) {
-        let tries = 0;
-        while (tries < 1000) {
-          const x = Math.floor(Math.random() * (containerWidth - 80));
-          const y = Math.floor(Math.random() * (containerHeight - 80));
-          const newRect = { x, y, width: 80, height: 80 };
-
-          const overlaps = existingRects.some(rect => {
-            return !(
-              x + 80 < rect.x ||
-              x > rect.x + rect.width ||
-              y + 80 < rect.y ||
-              y > rect.y + rect.height
-            );
-          });
-
-          if (!overlaps) return newRect;
-          tries++;
-        }
-        return { x: 0, y: 0 }; // フォールバック
-      }
+      //function findNonOverlappingPosition(existingRects, containerWidth, containerHeight) {
+      //  let tries = 0;
+      //  while (tries < 1000) {
+      //    const x = Math.floor(Math.random() * (containerWidth - 80));
+      //    const y = Math.floor(Math.random() * (containerHeight - 80));
+      //    const newRect = { x, y, width: 80, height: 80 };
+//
+  //        const overlaps = existingRects.some(rect => {
+    //        return !(
+      //        x + 80 < rect.x ||
+        //      x > rect.x + rect.width ||
+          //    y + 80 < rect.y ||
+//              y > rect.y + rect.height
+  //          );
+    //      });
+//
+  //        if (!overlaps) return newRect;
+    //      tries++;
+      //  }
+        //return { x: 0, y: 0 }; // フォールバック
+      //}
     </script>
 
 
@@ -635,8 +658,8 @@
         top: 0;
         width: 100vw;
         height: 100vh;
-        padding-top: 100px;    /* headerの高さ分 */
-        padding-bottom: 100px; /* steps-navの高さ分 */
+        padding-top: 100px;
+        padding-bottom: 100px;
         box-sizing: border-box;
         background: #fff;
         overflow-y: auto;
@@ -757,6 +780,18 @@
         border-color: #ffbd59;
       }
 
+      #laststep .media-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 0px;
+        width: 1500px;
+        height: auto;         /* ← ここをautoに */
+        margin: 30px auto 0 auto;
+        position: relative;
+      }
+
       .input-group {
         display: flex;
         justify-content: center;
@@ -818,21 +853,28 @@
       }
 
       .touch-image {
-        position: absolute;
+        position: static;
         width: 80px;
         height: 80px;
         cursor: pointer;
+        margin: 0;
       }
 
       #laststep {
         position: relative;
       }
       #laststep .media-container {
-        position: relative;  /* ← これを追加！ */
-        width: 100%;
-        height: 400px;
-        margin-top: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 0px;
+        width: 1500px;
+        height: 1000px;
+        margin: 30px auto 0 auto;
+        position: relative;
       }
+
       #laststep .central-area {
         position: relative;
         z-index: 10;

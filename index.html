@@ -200,7 +200,7 @@
       let laststep_inited = false;
 
       let touchedImages = [false, false, false, false];
-      let dummyTouched = false; // ← NEW!!
+      let dummyTouched = false; // ← NEW!!　←？？？？？？？？？？
 
       function markImageTouched(index, imgEl) {
         if (!touchedImages[index]) {
@@ -497,8 +497,8 @@
         touchedImages = [false, false, false, false]; // 状態リセット
         dummyTouched = false; // ← ダミーも忘れずリセット
 
-        const correctImages = ['frame1.png', 'frame2.png', 'frame3.png', 'frame4.png'];
-        const dummyImages = Array.from({ length: 30 }, (_, i) => `dummy${i + 1}.png`);
+        const correctImages = ['ac/1.png', 'ac/2.png', 'ac/3.png', 'ac/4.png'];
+        const dummyImages = Array.from({ length: 30 }, (_, i) => `dummy/dummy${i + 1}.png`);
 
         const allImages = [
           ...correctImages.map((src, index) => ({ src, index, dummy: false })),
@@ -540,8 +540,8 @@
 
 
       // 正解画像とダミー画像を含める
-      const correctImages = ["frame1.png", "frame2.png", "frame3.png", "frame4.png"];
-      const dummyImages = Array.from({ length: 30 }, (_, i) => `dummy${i + 1}.png`);
+      const correctImages = ["ac/1.png", "ac/2.png", "ac/3.png", "ac/4.png"];
+      const dummyImages = Array.from({ length: 30 }, (_, i) => `dummy/dummy${i + 1}.png`);
 
       const container = document.getElementById("media-container");
 

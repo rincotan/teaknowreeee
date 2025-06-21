@@ -1,23 +1,41 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>謎解き</title>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <title>謎解き</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+</head>
   <body>
     <div class="header"><h1>HAPPY BIRTHDAY!!!!!!!!!!!!!!</h1></div>
     
-    <!-- ★テスト用ページジャンプボタン（後で消してOK） -->
-    <div style="position:fixed;top:60px;left:10px;z-index:2000;background:#ff0;padding:10px;border:2px solid #f00;">
-      <b>テストジャンプ</b><br>
-      <button onclick="showStep('step1')">STEP1</button>
-      <button onclick="showStep('step2')">STEP2</button>
-      <button onclick="showStep('step3')">STEP3</button>
-      <button onclick="showStep('laststep')">LAST</button>
-      <button onclick="showStep('lastanswer')">LASTLAST</button>
-      <button onclick="showStep('toolpage')">TOOL</button>
-      <button onclick="showStep('videoend')">END</button>
+    <!-- ★テスト用ページジャンプボタン（折りたたみ式・後で消してOK） -->
+    <div id="test-jump-toggle" style="position:fixed;top:60px;left:10px;z-index:2000;">
+      <button id="test-jump-open" style="background:#ff0;border:2px solid #f00;padding:4px 12px;font-size:16px;">▼テストジャンプ</button>
+      <div id="test-jump-panel" style="display:none;background:#ff0;padding:10px 10px 5px 10px;border:2px solid #f00;">
+        <b>テストジャンプ</b>
+        <button onclick="showStep('step1')">STEP1</button>
+        <button onclick="showStep('step2')">STEP2</button>
+        <button onclick="showStep('step3')">STEP3</button>
+        <button onclick="showStep('laststep')">LAST</button>
+        <button onclick="showStep('lastanswer')">LASTLAST</button>
+        <button onclick="showStep('toolpage')">TOOL</button>
+        <button onclick="showStep('videoend')">END</button>
+        <button onclick="document.getElementById('test-jump-panel').style.display='none';document.getElementById('test-jump-open').style.display='inline-block';">▲閉じる</button>
+      </div>
     </div>
+    <script>
+      // 折りたたみ制御
+      document.addEventListener("DOMContentLoaded", function() {
+        const openBtn = document.getElementById('test-jump-open');
+        const panel = document.getElementById('test-jump-panel');
+        if(openBtn && panel){
+          openBtn.onclick = function() {
+            openBtn.style.display = 'none';
+            panel.style.display = 'block';
+          };
+        }
+      });
+    </script>
 
     <!-- STEP1 -->
     <div id="step1" class="page active">
@@ -34,12 +52,11 @@
       <h3>
         <strong style="color: red">赤</strong>＝<strong style="color: blue">赤</strong>
       </h3>
-      <h3>同じものを結んで数字と色のペア3つ作れ、1のペア同時に読め</h3>
+      <h3>同じものを結んで数字と色のペア3つ作り、1のペア同時に読め</h3>
       <img
         id="puzzleImageStep2"
         src="step2_image.png"
         alt="謎解き画像"
-        style="margin-top: 10px; max-width: 30%; height: auto"
       />
 
       <div class="media-container">
@@ -107,7 +124,6 @@
         id="puzzleImageStep3"
         src="step3_image.png"
         alt="謎解き画像"
-        style="margin-top: 10px; max-width: 30%; height: auto"
       />
       <h2>⇩</h2>
       <h3>赤上から</h3>
@@ -259,7 +275,7 @@
           document.getElementById("nav-step2").disabled = false;
           showStep("step2");
         } else {
-          alert("違うらしい");
+          alert("間違ってるYO‼");
         }
       }
 
@@ -270,7 +286,7 @@
           document.getElementById("nav-step3").disabled = false;
           showStep("step3");
         } else {
-          alert("違うらしい");
+          alert("間違ってるYO‼");
         }
       }
 
@@ -281,7 +297,7 @@
           document.getElementById("nav-laststep").disabled = false;
           showStep("laststep");
         } else {
-          alert("違うらしい");
+          alert("間違ってるYO‼");
         }
       }
 
@@ -290,7 +306,7 @@
         if (input === "おせち") {
           showStep("videoend");
         } else {
-          alert("違うらしい");
+          alert("間違ってるYO‼");
         }
       }
 
@@ -303,7 +319,7 @@
         if (selected === "黄" && input === "ぎゃくさいせいしたい") {
           document.getElementById("toolVideoContainer").style.display = "block";
         } else {
-          alert("条件が一致しないよ");
+          alert("応えられません");
           document.getElementById("toolVideoContainer").style.display = "none";
         }
       }
@@ -544,7 +560,7 @@
 
       function confirmTouched() {
         if (dummyTouched) {
-          alert("違うらしい");
+          alert("間違ってるYO‼");
           resetLastStep();
           return;
         }
@@ -554,7 +570,7 @@
           laststep_inited = true;
           document.getElementById("nav-lastanswer").disabled = false;
         } else {
-          alert("違うらしい");
+          alert("間違ってるYO‼");
           resetLastStep();
         }
       }
@@ -590,29 +606,6 @@
           rect2.y + rect2.height + padding < rect1.y
         );
       }
-
-      // 空いてる位置を探す関数
-      //function findNonOverlappingPosition(existingRects, containerWidth, containerHeight) {
-      //  let tries = 0;
-      //  while (tries < 1000) {
-      //    const x = Math.floor(Math.random() * (containerWidth - 80));
-      //    const y = Math.floor(Math.random() * (containerHeight - 80));
-      //    const newRect = { x, y, width: 80, height: 80 };
-//
-  //        const overlaps = existingRects.some(rect => {
-    //        return !(
-      //        x + 80 < rect.x ||
-        //      x > rect.x + rect.width ||
-          //    y + 80 < rect.y ||
-//              y > rect.y + rect.height
-  //          );
-    //      });
-//
-  //        if (!overlaps) return newRect;
-    //      tries++;
-      //  }
-        //return { x: 0, y: 0 }; // フォールバック
-      //}
     </script>
 
 
@@ -627,6 +620,18 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
+        width: 100vw;
+      }
+
+      @media (max-width: 700px) {
+        button, .next-button, .steps-nav button {
+          font-size: 16px;
+          padding: 12px 10px;
+          min-width: 80px;
+        }
+        .header h1 {
+          font-size: 18px;
+        }
       }
 
       .header {
@@ -714,6 +719,16 @@
 
       .next-button:hover {
         background: #d03c69;
+      }
+      
+      /* 追加：step2_image.pngとstep3_image.pngだけ大きく・幅固定 */
+      #puzzleImageStep2,
+      #puzzleImageStep3 {
+        display: block;
+        margin: 20px auto 10px auto;
+        width: 400px;
+        max-width: 90vw;
+        height: auto;
       }
 
       .media-container {
@@ -880,6 +895,79 @@
         z-index: 10;
         margin-bottom: 20px;
       }
+
+
+
+      /* 既存の .media-container, .media-col, .video-row, .touch-image などはそのまま */
+
+      @media (max-width: 700px) {
+        .page {
+          padding-bottom: 150px; /* スマホ時は余白をさらに増やす */
+        }
+        .next-button {
+          margin-bottom: 30px;
+        }
+
+        .media-container {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: flex-start;
+          gap: 10vw;
+          width: 100vw;
+          min-width: 0;
+          margin-top: 10px;
+          padding-left: 0;
+          padding-right: 0;
+        }
+        .media-col {
+          flex-direction: column;
+          justify-content: center;
+          gap: 10px;
+          width: auto;
+          min-width: 0;
+        }
+
+        .video-row {
+          flex-direction: row;
+          align-items: center;
+          gap: 10px;
+        }
+        .touch-image,
+        .media-container video,
+        .media-container img {
+          width: 150px;
+          max-width: 80vw;
+          height: auto;
+        }
+        .dot {
+          width: 14px;
+          height: 14px;
+        }
+        #laststep .media-container {
+          width: 100vw;
+          height: auto;
+          gap: 10px;
+        }
+      }
+
+      @media (max-width: 700px) {
+        .steps-nav {
+          flex-wrap: wrap;         /* ボタンを折り返す */
+          height: auto;            /* 高さを自動に */
+          gap: 10px;
+          padding: 10px 0;
+        }
+        .steps-nav button {
+          flex: 1 1 40%;           /* 幅を自動調整しつつ2列にもなりやすく */
+          min-width: 100px;
+          margin: 5px 5px;
+          font-size: 14px;
+          padding: 8px 0;
+        }
+      }
+      
     </style>
   </body>
 </html>

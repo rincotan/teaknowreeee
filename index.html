@@ -204,11 +204,23 @@
     <div id="videoend" class="page">
       <h1>おめでとう！</h1>
       <h1>すべての謎を解き明かした…！</h1>
-      <video
-        controls
-        src="final_video.mp4"
-        style="width: 90%; max-width: 600px"
-      ></video>
+      <img
+        id="letter-img"
+        src="letter1.png"
+        alt="手紙"
+        onclick="showLetterModal()"
+      />
+      <!-- モーダル手紙画像 -->
+      <div id="letter-modal" style="display:none;">
+        <div class="modal-inner">
+          <img
+            src="letter2.png"
+            alt="手紙2"
+            onclick="hideLetterModal()"
+          />
+          <div class="modal-message">ひらがなだけの列を消せ</div>
+        </div>
+      </div>
     </div>
 
     <!-- STEP NAVIGATION -->
@@ -606,6 +618,24 @@
           rect2.y + rect2.height + padding < rect1.y
         );
       }
+      function showLetterModal() {
+        const modal = document.getElementById('letter-modal');
+        modal.style.display = 'flex';
+        // 強制再描画でアニメーションを効かせる
+        void modal.offsetWidth;
+        modal.classList.add('active');
+        modal.classList.remove('fade-out');
+      }
+
+      function hideLetterModal() {
+        const modal = document.getElementById('letter-modal');
+        modal.classList.remove('active');
+        modal.classList.add('fade-out');
+        setTimeout(() => {
+          modal.style.display = 'none';
+          modal.classList.remove('fade-out');
+        }, 500); // アニメーション時間と合わせる
+      }
     </script>
 
 
@@ -967,7 +997,58 @@
           padding: 8px 0;
         }
       }
-      
+      #letter-modal {
+        display: none;
+        position: fixed;
+        z-index: 3000;
+        left: 0; top: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(255,255,255,0.7);
+        backdrop-filter: blur(2px);
+        justify-content: center;
+        align-items: center;
+        /* ↓ スクロール可能に */
+        overflow: auto;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      #letter-modal .modal-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        max-width: 90vw;
+        max-height: 90vh;
+        margin: 40px 0;
+      }
+      #letter-modal img {
+        max-width: 70vw;
+        max-height: 60vh;
+        box-shadow: 0 0 30px #888;
+        border-radius: 12px;
+        background: #fff;
+        cursor: pointer;
+        display: block;
+      }
+      #letter-modal .modal-message {
+        margin-top: 30px;
+        font-size: 1.3em;
+        color: #333;
+        background: rgba(255,255,255,0.9);
+        padding: 12px 24px;
+        border-radius: 8px;
+      }
+      #letter-modal.active {
+        display: flex;
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #letter-modal.fade-out {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
     </style>
   </body>
 </html>

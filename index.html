@@ -5,21 +5,7 @@
   <title>謎解き</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 </head>
-  <!-- ★テスト用ページジャンプボタン（折りたたみ式・後で消してOK） -->
-    <div id="test-jump-toggle" style="position:fixed;top:60px;left:10px;z-index:2000;">
-      <button id="test-jump-open" style="background:#ff0;border:2px solid #f00;padding:4px 12px;font-size:16px;">▼テストジャンプ</button>
-      <div id="test-jump-panel" style="display:none;background:#ff0;padding:10px 10px 5px 10px;border:2px solid #f00;">
-        <b>テストジャンプ</b>
-        <button onclick="showStep('step1')">STEP1</button>
-        <button onclick="showStep('step2')">STEP2</button>
-        <button onclick="showStep('step3')">STEP3</button>
-        <button onclick="showStep('laststep')">LAST</button>
-        <button onclick="showStep('lastanswer')">LASTLAST</button>
-        <button onclick="showStep('toolpage')">TOOL</button>
-        <button onclick="showStep('videoend')">END</button>
-        <button onclick="document.getElementById('test-jump-panel').style.display='none';document.getElementById('test-jump-open').style.display='inline-block';">▲閉じる</button>
-      </div>
-    </div>
+
   <body>
     <div class="header"><h1>HAPPY BIRTHDAY!!!!!!!!!!!!!!</h1></div>
     
@@ -335,6 +321,19 @@
 
         // 「ぎゃくさいせいしたい」または「逆再生したい」どちらもOK
         const validInputs = ["ぎゃくさいせいしたい", "逆再生したい"];
+
+        // 「ひっくりかえしたい」系はもっと具体的に
+        const vagueInputs = [
+          "ひっくりかえしたい",
+          "ひっくり返したい",
+          "ひっくりがえしたい"
+        ];
+
+        if (vagueInputs.includes(input)) {
+          alert("もっと具体的に");
+          videoContainer.style.display = "none";
+          return;
+        }
 
         if (selected === "黄" && validInputs.includes(input)) {
           videoContainer.style.display = "block";

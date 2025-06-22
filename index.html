@@ -64,7 +64,7 @@
           <div class="video-row">
             <div class="video-wrapper red">
               <span class="label-text" style="color: red">赤</span>
-              <video controls src="video/赤.mp4"></video>
+              <video controls src="video/R赤.mp4"></video>
             </div>
             <div class="dot" data-id="red"></div>
           </div>
@@ -78,7 +78,7 @@
           <div class="video-row">
             <div class="video-wrapper yellow">
               <span class="label-text" style="color: #ffbd59">黄</span>
-              <video controls src="video/黄.mp4"></video>
+              <video controls src="video/R黄.mp4"></video>
             </div>
             <div class="dot" data-id="yellow"></div>
           </div>
@@ -95,7 +95,7 @@
             <div class="dot" data-id="2"></div>
             <div class="video-wrapper label">
               <span class="label-text">②</span>
-              <video controls src="video/2.mp4"></video>
+              <video controls src="video/R2.mp4"></video>
             </div>
           </div>
           <div class="video-row">
@@ -334,13 +334,13 @@
 
         if (selected === "黄" && input === "ぎゃくさいせいしたい") {
           videoContainer.style.display = "block";
-          videoContainer.innerHTML = `<video controls src="tool_video.mp4" style="width: 80%; max-width: 600px"></video>`;
+          videoContainer.innerHTML = `<video controls src="video/黄.mp4" style="width: 80%; max-width: 600px"></video>`;
         } else if (selected === "赤" && input === "ぎゃくさいせいしたい") {
           videoContainer.style.display = "block";
-          videoContainer.innerHTML = `<video controls src="tool_video_red.mp4" style="width: 80%; max-width: 600px"></video>`;
-        } else if (selected === "青" && input === "ぎゃくさいせいしたい") {
+          videoContainer.innerHTML = `<video controls src="video/赤.mp4" style="width: 80%; max-width: 600px"></video>`;
+        } else if (selected === "2" && input === "ぎゃくさいせいしたい") {
           videoContainer.style.display = "block";
-          videoContainer.innerHTML = `<video controls src="tool_video_blue.mp4" style="width: 80%; max-width: 600px"></video>`;
+          videoContainer.innerHTML = `<video controls src="video/2.mp4" style="width: 80%; max-width: 600px"></video>`;
         } else {
           alert("応えられません");
           videoContainer.style.display = "none";

@@ -347,18 +347,197 @@
         }
       }
 
+
       document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll(".steps-nav button").forEach((btn) => {
-          btn.addEventListener("click", (e) => {
-            const id = e.target.id.split("-")[1];
-            if (id === "step1") showStep(id);
-            else if (id === "step2" && step1Cleared) showStep(id);
-            else if (id === "step3" && step2Cleared) showStep(id);
-            else if (id === "laststep" && step3Cleared) showStep(id);
-            else if (id === "toolpage" && !btn.disabled) showStep(id);
-            else if (id === "lastanswer" && laststep_inited) showStep(id);
-            else alert("このステップにはまだ移動できません。");
+        const svg = document.getElementById("dot-lines");
+        let dragging = false;
+        let startDot = null;
+        let tempLine = null;
+
+        // タッチ対応追加
+        function getTouchPos(e) {
+          if (e.touches && e.touches.length > 0) {
+            return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          } else {
+            return { x: e.clientX, y: e.clientY };
+          }
+        }
+
+        // ...既存のconnections, leftIds, rightIds, getDotCenter, getDotById, clearLines, redrawLines...
+
+        const dots = document.querySelectorAll(".dot");
+
+        // PC用mousedown
+        dots.forEach(dot => {
+          dot.addEventListener("mousedown", e => {
+            e.preventDefault();
+            dragging = true;
+            startDot = dot;
+            const { x, y } = getDotCenter(dot);
+            tempLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            tempLine.setAttribute("x1", x);
+            tempLine.setAttribute("y1", y);
+            tempLine.setAttribute("x2", x);
+            tempLine.setAttribute("y2", y);
+
+            let color = "#000";
+            if (dot.dataset.id === "red") color = "red";
+            else if (dot.dataset.id === "blue") color = "blue";
+            else if (dot.dataset.id === "yellow") color = "#ffbd59";
+            tempLine.setAttribute("stroke", color);
+
+            tempLine.setAttribute("stroke-width", "4");
+            tempLine.setAttribute("stroke-linecap", "round");
+            svg.appendChild(tempLine);
           });
+
+          // スマホ用touchstart
+          dot.addEventListener("touchstart", e => {
+            e.preventDefault();
+            dragging = true;
+            startDot = dot;
+            const { x, y } = getDotCenter(dot);
+            tempLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            tempLine.setAttribute("x1", x);
+            tempLine.setAttribute("y1", y);
+            tempLine.setAttribute("x2", x);
+            tempLine.setAttribute("y2", y);
+
+            let color = "#000";
+            if (dot.dataset.id === "red") color = "red";
+            else if (dot.dataset.id === "blue") color = "blue";
+            else if (dot.dataset.id === "yellow") color = "#ffbd59";
+            tempLine.setAttribute("stroke", color);
+
+            tempLine.setAttribute("stroke-width", "4");
+            tempLine.setAttribute("stroke-linecap", "round");
+            svg.appendChild(tempLine);
+          });
+        });
+
+        // PC用mousemove
+        document.addEventListener("mousemove", e => {
+          if (dragging && tempLine) {
+            const parentRect = svg.parentElement.getBoundingClientRect();
+            const x = e.clientX - parentRect.left;
+            const y = e.clientY - parentRect.top;
+            tempLine.setAttribute("x2", x);
+            tempLine.setAttribute("y2", y);
+          }
+        });
+
+        // スマホ用touchmove
+        document.addEventListener("touchmove", e => {
+          if (dragging && tempLine) {
+            const parentRect = svg.parentElement.getBoundingClientRect();
+            const { x, y } = getTouchPos(e);
+            tempLine.setAttribute("x2", x - parentRect.left);
+            tempLine.setAttribute("y2", y - parentRect.top);
+          }
+        });
+
+        // PC用mouseup
+        document.addEventListener("mouseup", e => {
+          if (dragging && tempLine) {
+            let found = null;
+            let minDist = Infinity;
+            const RADIUS = 8;
+
+            dots.forEach(dot => {
+              const rect = dot.getBoundingClientRect();
+              const cx = rect.left + rect.width / 2;
+              const cy = rect.top + rect.height / 2;
+              const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+              if (dist < RADIUS && dot !== startDot && dist < minDist) {
+                found = dot;
+                minDist = dist;
+              }
+            });
+
+            const startId = startDot.dataset.id;
+            const endId = found ? found.dataset.id : null;
+
+            const isLeftToRight = leftIds.includes(startId) && rightIds.includes(endId);
+            const isRightToLeft = rightIds.includes(startId) && leftIds.includes(endId);
+
+            if (
+              found &&
+              (isLeftToRight || isRightToLeft)
+            ) {
+              if (connections[startId]) {
+                const oldPair = connections[startId];
+                delete connections[oldPair];
+                delete connections[startId];
+              }
+              if (connections[endId]) {
+                const oldPair = connections[endId];
+                delete connections[oldPair];
+                delete connections[endId];
+              }
+              connections[startId] = endId;
+              connections[endId] = startId;
+              redrawLines();
+            } else {
+              svg.removeChild(tempLine);
+            }
+
+            tempLine = null;
+            dragging = false;
+            startDot = null;
+          }
+        });
+
+        // スマホ用touchend
+        document.addEventListener("touchend", e => {
+          if (dragging && tempLine) {
+            let found = null;
+            let minDist = Infinity;
+            const RADIUS = 30; // タッチは誤差が大きいので広め
+
+            const { x: touchX, y: touchY } = getTouchPos(e);
+
+            dots.forEach(dot => {
+              const rect = dot.getBoundingClientRect();
+              const cx = rect.left + rect.width / 2;
+              const cy = rect.top + rect.height / 2;
+              const dist = Math.hypot(touchX - cx, touchY - cy);
+              if (dist < RADIUS && dot !== startDot && dist < minDist) {
+                found = dot;
+                minDist = dist;
+              }
+            });
+
+            const startId = startDot.dataset.id;
+            const endId = found ? found.dataset.id : null;
+
+            const isLeftToRight = leftIds.includes(startId) && rightIds.includes(endId);
+            const isRightToLeft = rightIds.includes(startId) && leftIds.includes(endId);
+
+            if (
+              found &&
+              (isLeftToRight || isRightToLeft)
+            ) {
+              if (connections[startId]) {
+                const oldPair = connections[startId];
+                delete connections[oldPair];
+                delete connections[startId];
+              }
+              if (connections[endId]) {
+                const oldPair = connections[endId];
+                delete connections[oldPair];
+                delete connections[endId];
+              }
+              connections[startId] = endId;
+              connections[endId] = startId;
+              redrawLines();
+            } else {
+              svg.removeChild(tempLine);
+            }
+
+            tempLine = null;
+            dragging = false;
+            startDot = null;
+          }
         });
       });
 

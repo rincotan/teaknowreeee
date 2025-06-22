@@ -8,7 +8,21 @@
   <body>
     <div class="header"><h1>HAPPY BIRTHDAY!!!!!!!!!!!!!!</h1></div>
     
-
+    <!-- ★テスト用ページジャンプボタン（折りたたみ式・後で消してOK） -->
+    <div id="test-jump-toggle" style="position:fixed;top:60px;left:10px;z-index:2000;">
+      <button id="test-jump-open" style="background:#ff0;border:2px solid #f00;padding:4px 12px;font-size:16px;">▼テストジャンプ</button>
+      <div id="test-jump-panel" style="display:none;background:#ff0;padding:10px 10px 5px 10px;border:2px solid #f00;">
+        <b>テストジャンプ</b>
+        <button onclick="showStep('step1')">STEP1</button>
+        <button onclick="showStep('step2')">STEP2</button>
+        <button onclick="showStep('step3')">STEP3</button>
+        <button onclick="showStep('laststep')">LAST</button>
+        <button onclick="showStep('lastanswer')">LASTLAST</button>
+        <button onclick="showStep('toolpage')">TOOL</button>
+        <button onclick="showStep('videoend')">END</button>
+        <button onclick="document.getElementById('test-jump-panel').style.display='none';document.getElementById('test-jump-open').style.display='inline-block';">▲閉じる</button>
+      </div>
+    </div>
     <script>
       // 折りたたみ制御
       document.addEventListener("DOMContentLoaded", function() {
@@ -334,12 +348,33 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".steps-nav button").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const id = e.target.id.split("-")[1];
+            if (id === "step1") showStep(id);
+            else if (id === "step2" && step1Cleared) showStep(id);
+            else if (id === "step3" && step2Cleared) showStep(id);
+            else if (id === "laststep" && step3Cleared) showStep(id);
+            else if (id === "toolpage" && !btn.disabled) showStep(id);
+            else if (id === "lastanswer" && laststep_inited) showStep(id);
+            else alert("このステップにはまだ移動できません。");
+          });
+        });
+      });
+
+
+
+
+      document.addEventListener("DOMContentLoaded", () => {
         const svg = document.getElementById("dot-lines");
-        let tapStartDot = null;
+        let dragging = false;
+        let startDot = null;
         let tempLine = null;
 
         // どの点がどの点と結ばれているかを記録
         const connections = {}; // 例: {red: "2", "2": "red", ...}
+
+        // 左側・右側の点を区別
         const leftIds = ["red", "blue", "yellow"];
         const rightIds = ["1", "2", "3"];
 
@@ -353,9 +388,12 @@
           };
         }
 
+        // ドットをすべて取得
+        const dots = document.querySelectorAll(".dot");
+
         // data-idからdot要素を取得
         function getDotById(id) {
-          return Array.from(document.querySelectorAll(".dot")).find(dot => dot.dataset.id === id);
+          return Array.from(dots).find(dot => dot.dataset.id === id);
         }
 
         // 線をすべて消す
@@ -366,17 +404,17 @@
         // 現在のconnectionsからSVG線を再描画
         function redrawLines() {
           clearLines();
-          const drawn = new Set();
-          Object.keys(connections).forEach(id => {
+          leftIds.concat(rightIds).forEach(id => {
             const pairId = connections[id];
-            const key = [id, pairId].sort().join("-");
-            if (pairId && !drawn.has(key)) {
+            // 片方向だけ描画（重複防止）
+            if (pairId && id < pairId) {
               const dot1 = getDotById(id);
               const dot2 = getDotById(pairId);
               if (dot1 && dot2) {
                 const { x: x1, y: y1 } = getDotCenter(dot1);
                 const { x: x2, y: y2 } = getDotCenter(dot2);
 
+                // 線の色を決定
                 let color = "#000";
                 if (id === "red" || pairId === "red") color = "red";
                 else if (id === "blue" || pairId === "blue") color = "blue";
@@ -391,24 +429,24 @@
                 line.setAttribute("stroke-width", "4");
                 line.setAttribute("stroke-linecap", "round");
                 svg.appendChild(line);
-                drawn.add(key);
               }
             }
           });
         }
 
-        // タップ・クリック共通処理
-        function handleDotTap(dot) {
-          const { x, y } = getDotCenter(dot);
-
-          if (!tapStartDot) {
-            tapStartDot = dot;
+        dots.forEach(dot => {
+          dot.addEventListener("mousedown", e => {
+            e.preventDefault(); // ← これでテキスト選択防止
+            dragging = true;
+            startDot = dot;
+            const { x, y } = getDotCenter(dot);
             tempLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
             tempLine.setAttribute("x1", x);
             tempLine.setAttribute("y1", y);
             tempLine.setAttribute("x2", x);
             tempLine.setAttribute("y2", y);
 
+            // 仮線の色を始点の色に
             let color = "#000";
             if (dot.dataset.id === "red") color = "red";
             else if (dot.dataset.id === "blue") color = "blue";
@@ -418,59 +456,11 @@
             tempLine.setAttribute("stroke-width", "4");
             tempLine.setAttribute("stroke-linecap", "round");
             svg.appendChild(tempLine);
-          } else if (tapStartDot !== dot) {
-            const startId = tapStartDot.dataset.id;
-            const endId = dot.dataset.id;
-
-            const isLeftToRight = leftIds.includes(startId) && rightIds.includes(endId);
-            const isRightToLeft = rightIds.includes(startId) && leftIds.includes(endId);
-
-            if (isLeftToRight || isRightToLeft) {
-              // 既存の接続を解除（両方とも解除する！）
-              if (connections[startId] !== undefined) {
-                const oldPair = connections[startId];
-                if (oldPair !== undefined) delete connections[oldPair];
-                delete connections[startId];
-              }
-              if (connections[endId] !== undefined) {
-                const oldPair = connections[endId];
-                if (oldPair !== undefined) delete connections[oldPair];
-                delete connections[endId];
-              }
-              // 新しい接続
-              connections[startId] = endId;
-              connections[endId] = startId;
-              redrawLines();
-            }
-            if (tempLine) {
-              svg.removeChild(tempLine);
-              tempLine = null;
-            }
-            tapStartDot = null;
-          } else {
-            if (tempLine) {
-              svg.removeChild(tempLine);
-              tempLine = null;
-            }
-            tapStartDot = null;
-          }
-        }
-
-        // ドットにイベント登録（PC: click, スマホ: touchend）
-        document.querySelectorAll(".dot").forEach(dot => {
-          dot.addEventListener("click", e => {
-            e.preventDefault();
-            handleDotTap(dot);
-          });
-          dot.addEventListener("touchend", e => {
-            e.preventDefault();
-            handleDotTap(dot);
           });
         });
 
-        // 仮線を指に追従させる（1回目タップ後のみ）
         document.addEventListener("mousemove", e => {
-          if (tapStartDot && tempLine) {
+          if (dragging && tempLine) {
             const parentRect = svg.parentElement.getBoundingClientRect();
             const x = e.clientX - parentRect.left;
             const y = e.clientY - parentRect.top;
@@ -478,18 +468,60 @@
             tempLine.setAttribute("y2", y);
           }
         });
-        document.addEventListener("touchmove", e => {
-          if (tapStartDot && tempLine) {
-            const parentRect = svg.parentElement.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = touch.clientX - parentRect.left;
-            const y = touch.clientY - parentRect.top;
-            tempLine.setAttribute("x2", x);
-            tempLine.setAttribute("y2", y);
+
+        document.addEventListener("mouseup", e => {
+          if (dragging && tempLine) {
+            let found = null;
+            let minDist = Infinity;
+            const RADIUS = 8;
+
+            dots.forEach(dot => {
+              const rect = dot.getBoundingClientRect();
+              const cx = rect.left + rect.width / 2;
+              const cy = rect.top + rect.height / 2;
+              const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+              if (dist < RADIUS && dot !== startDot && dist < minDist) {
+                found = dot;
+                minDist = dist;
+              }
+            });
+
+            const startId = startDot.dataset.id;
+            const endId = found ? found.dataset.id : null;
+
+            const isLeftToRight = leftIds.includes(startId) && rightIds.includes(endId);
+            const isRightToLeft = rightIds.includes(startId) && leftIds.includes(endId);
+
+            if (
+              found &&
+              (isLeftToRight || isRightToLeft)
+            ) {
+              // 既存の接続を解除（新しい線だけ残す）
+              if (connections[startId]) {
+                const oldPair = connections[startId];
+                delete connections[oldPair];
+                delete connections[startId];
+              }
+              if (connections[endId]) {
+                const oldPair = connections[endId];
+                delete connections[oldPair];
+                delete connections[endId];
+              }
+              // 新しい接続を記録
+              connections[startId] = endId;
+              connections[endId] = startId;
+              redrawLines();
+            } else {
+              // 不正な接続なら線を消す
+              svg.removeChild(tempLine);
+            }
+
+            tempLine = null;
+            dragging = false;
+            startDot = null;
           }
         });
       });
-        
 
       function resetLastStep() {
         const container = document.getElementById("media-container");
@@ -919,11 +951,11 @@
 
         .media-container {
           display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;         /* ← 折り返しOKに */
+          flex-direction: row;      /* 横並び */
+          flex-wrap: nowrap;        /* 折り返さない */
           justify-content: center;
           align-items: flex-start;
-          gap: 3vw;                /* ← gapを小さく */
+          gap: 8vw;                 /* カラム間の余白 */
           width: 100vw;
           min-width: 0;
           margin-top: 10px;
@@ -932,10 +964,10 @@
         }
         .media-col {
           display: flex;
-          flex-direction: column;
+          flex-direction: column;   /* 縦並び */
           justify-content: flex-start;
           gap: 10px;
-          width: 48vw;            /* ← 2カラムでちょうど収まる幅に */
+          width: auto;
           min-width: 0;
         }
         .video-row {

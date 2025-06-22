@@ -327,12 +327,23 @@
       function checkTool() {
         const selected = document.getElementById("toolSelect").value;
         const input = document.getElementById("toolInput").value.trim();
+        const videoContainer = document.getElementById("toolVideoContainer");
+
+        // すべて非表示にしてから該当動画だけ表示
+        videoContainer.innerHTML = "";
 
         if (selected === "黄" && input === "ぎゃくさいせいしたい") {
-          document.getElementById("toolVideoContainer").style.display = "block";
+          videoContainer.style.display = "block";
+          videoContainer.innerHTML = `<video controls src="tool_video.mp4" style="width: 80%; max-width: 600px"></video>`;
+        } else if (selected === "赤" && input === "ぎゃくさいせいしたい") {
+          videoContainer.style.display = "block";
+          videoContainer.innerHTML = `<video controls src="tool_video_red.mp4" style="width: 80%; max-width: 600px"></video>`;
+        } else if (selected === "青" && input === "ぎゃくさいせいしたい") {
+          videoContainer.style.display = "block";
+          videoContainer.innerHTML = `<video controls src="tool_video_blue.mp4" style="width: 80%; max-width: 600px"></video>`;
         } else {
           alert("応えられません");
-          document.getElementById("toolVideoContainer").style.display = "none";
+          videoContainer.style.display = "none";
         }
       }
 

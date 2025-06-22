@@ -951,11 +951,11 @@
 
         .media-container {
           display: flex;
-          flex-direction: row;      /* 横並び */
-          flex-wrap: nowrap;        /* 折り返さない */
+          flex-direction: row;
+          flex-wrap: wrap;         /* ← 折り返しOKに */
           justify-content: center;
           align-items: flex-start;
-          gap: 8vw;                 /* カラム間の余白 */
+          gap: 3vw;                /* ← gapを小さく */
           width: 100vw;
           min-width: 0;
           margin-top: 10px;
@@ -964,10 +964,10 @@
         }
         .media-col {
           display: flex;
-          flex-direction: column;   /* 縦並び */
+          flex-direction: column;
           justify-content: flex-start;
           gap: 10px;
-          width: auto;
+          width: 48vw;            /* ← 2カラムでちょうど収まる幅に */
           min-width: 0;
         }
         .video-row {

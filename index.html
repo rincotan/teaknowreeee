@@ -5,7 +5,6 @@
   <title>謎解き</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 </head>
-
   <body>
     <div class="header"><h1>HAPPY BIRTHDAY!!!!!!!!!!!!!!</h1></div>
     
@@ -38,13 +37,13 @@
       <h3>
         <strong style="color: red">赤</strong>＝<strong style="color: blue">赤</strong>
       </h3>
-      <h3>同じものを結んで数字と色のペア3つ作れ</h3>
+      <h3>同じものを結んで数字と色のペアを3つ作れ</h3>
       <img
         id="puzzleImageStep2"
         src="step2_image.png"
         alt="謎解き画像"
       />
-      <h3>1のペア組み合わせて読め</h3>
+      <h3>1のペアを組み合わせて読め</h3>
 
       <div class="media-container">
         <div class="media-col">
@@ -206,6 +205,18 @@
             onclick="hideLetterModal()"
           />
           <div class="modal-message">ひらがなだけの列を消せ</div>
+        </div>
+      </div>
+      <!-- ★追加：letter3用モーダル -->
+      <div id="letter3-modal" style="display:none;">
+        <div class="modal-inner">
+          <div style="font-size:1.5em; color:#d03c69; margin-bottom:12px; font-weight:bold;">没案</div>
+          <img
+            src="letter3.png"
+            alt="手紙3"
+            onclick="hideLetter3Modal()"
+          />
+          <div class="modal-message">誤字のある文だけ抜いて読め</div>
         </div>
       </div>
     </div>
@@ -650,6 +661,36 @@
           modal.classList.remove('fade-out');
         }, 500); // アニメーション時間と合わせる
       }
+
+      // ...既存のshowLetterModal, hideLetterModalの下あたりに追加...
+      function showLetter3Modal() {
+        const modal = document.getElementById('letter3-modal');
+        modal.style.display = 'flex';
+        void modal.offsetWidth;
+        modal.classList.add('active');
+        modal.classList.remove('fade-out');
+      }
+      function hideLetter3Modal() {
+        const modal = document.getElementById('letter3-modal');
+        modal.classList.remove('active');
+        modal.classList.add('fade-out');
+        setTimeout(() => {
+          modal.style.display = 'none';
+          modal.classList.remove('fade-out');
+        }, 500);
+      }
+
+      // endpage（videoend）でだけヘッダーをタップしたらletter3モーダルを表示
+      document.addEventListener("DOMContentLoaded", function() {
+        const header = document.querySelector('.header');
+        header.addEventListener('click', function() {
+          const videoend = document.getElementById('videoend');
+          if (videoend && videoend.classList.contains('active')) {
+            showLetter3Modal();
+          }
+        });
+      });
+
     </script>
 
 
@@ -1076,6 +1117,50 @@
         pointer-events: auto;
       }
       #letter-modal.fade-out {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      /* 既存の #letter-modal の下に追記（同じスタイルでOK） */
+      #letter3-modal {
+        display: none;
+        position: fixed;
+        z-index: 3000;
+        left: 0; top: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(255,255,255,0.7);
+        backdrop-filter: blur(2px);
+        justify-content: center;
+        align-items: center;
+        overflow: auto;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      #letter3-modal .modal-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        max-width: 90vw;
+        max-height: 90vh;
+        margin: 40px 0;
+      }
+      #letter3-modal img {
+        max-width: 70vw;
+        max-height: 60vh;
+        box-shadow: 0 0 30px #888;
+        border-radius: 12px;
+        background: #fff;
+        cursor: pointer;
+        display: block;
+      }
+      #letter3-modal.active {
+        display: flex;
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #letter3-modal.fade-out {
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.2s;

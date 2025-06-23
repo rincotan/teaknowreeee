@@ -1199,6 +1199,58 @@
         pointer-events: none;
         transition: opacity 0.2s;
       }
+      #letter2-modal {
+        display: none;
+        position: fixed;
+        z-index: 3000;
+        left: 0; top: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(255,255,255,0.7);
+        backdrop-filter: blur(2px);
+        justify-content: center;
+        align-items: center;
+        /* ↓ スクロール可能に */
+        overflow: auto;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      #letter2-modal .modal-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        max-width: 90vw;
+        max-height: 90vh;
+        margin: 40px 0;
+      }
+      #letter2-modal img {
+        max-width: 70vw;
+        max-height: 60vh;
+        box-shadow: 0 0 30px #888;
+        border-radius: 12px;
+        background: #fff;
+        cursor: pointer;
+        display: block;
+      }
+      #letter2-modal .modal-message {
+        margin-top: 30px;
+        font-size: 1.3em;
+        color: #333;
+        background: rgba(255,255,255,0.9);
+        padding: 12px 24px;
+        border-radius: 8px;
+      }
+      #letter2-modal.active {
+        display: flex;
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #letter2-modal.fade-out {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
     </style>
   </body>
 </html>
